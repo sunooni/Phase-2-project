@@ -2,18 +2,19 @@ import React from "react";
 import { Button } from "react-bootstrap";
 import Card from "react-bootstrap/Card";
 
-function ContentCard({ news, user, deleteHandler}) {
+function ContentCard({ book, user, deleteHandler}) {
   return (
     <>
       <Card className="mb-2" style={{ width: "20rem" }}>
-        <Card.Img variant="top" src={news.imageUrl} />
+        <Card.Img variant="top" src={book.image} />
         <Card.Body>
-          <Card.Title>{news.title}</Card.Title>
-          <Card.Text>{news.content}</Card.Text>
+          <Card.Title>{book.title}</Card.Title>
+          <Card.Title>{book.author}</Card.Title>
+          <Card.Text>{book.description}</Card.Text>
           <Button>Подробнее</Button>
-          {user?.id === news.userId && (
+          {user?.id === book.userId && (
             <>
-              <Button variant="danger" onClick={() => deleteHandler(news.id)}>
+              <Button variant="danger" onClick={() => deleteHandler(book.id)}>
                 Удалить
               </Button>
               <Button variant="warning" >Изменить</Button>

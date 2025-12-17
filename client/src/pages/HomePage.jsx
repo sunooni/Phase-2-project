@@ -6,46 +6,66 @@ import axiosinstance from "../shared/axiosinstance";
 import AuthorPage from "./AuthorPage";
 
 export default function HomePage({ user }) {
-  const [contents, setContents] = useState([]);
+  const [books, setBooks] = useState([]);
   const [showForm, setShowForm] = useState(false);
   
   useEffect(() => {
-    fetch("/api/contents")
+    fetch("/api/books")
       .then((res) => res.json())
-      .then((data) => setContents(data));
+      .then((data) => setBooks(data));
   }, []);
 
   const submitHandler = async (e) => {
     e.preventDefault();
     const formData = new FormData(e.target);
     const data = Object.fromEntries(formData);
-    const response = await axios.post("/api/contents", data);
-    setContents([...contents, response.data]);
+    const response = await axios.post("/api/books", data);
+    setBooks([...books, response.data]);
   };
 
   const deleteHandler = async (id) => {
-    await axiosinstance.delete(`contents/${id}`);
-    setContents(contents.filter((el) => el.id !== id));
+    await axiosinstance.delete(`books/${id}`);
+    setBooks(books.filter((el) => el.id !== id));
   };
 
   
   return (
     <Container>
       {!user ? (
-        <h1 style={{ textAlign: "center" }}>Новости дня</h1>
+        <h1 style={{ textAlign: "center" }}>Добро пожаловать в книжный уголок</h1>
       ) : (
         <div>
-          <h1 style={{ textAlign: "center" }}>Добро пожаловать {user.name}</h1>
+          <h2 style={{ textAlign: "center" }}>Личный кабинет {user.name}</h2>
 
           <Button onClick={() => setShowForm(!showForm)}>
-            Создать свою новость
+            +Добавить книгу
           </Button>
           {showForm && (
             <Form onSubmit={submitHandler}>
-              Название темы
-              <Form.Control type="text" name="title" />
-              Контент
-              <Form.Control type="text" name="content" />
+              <Form.Group className="mb-3">
+                <Form.Label>Название книги</Form.Label>
+                <Form.Control type="text" name="title" required />
+              </Form.Group>
+
+              <Form.Group className="mb-3">
+                <Form.Label>Автор книги</Form.Label>
+                <Form.Control type="text" name="author" required />
+              </Form.Group>
+
+              <Form.Group className="mb-3">
+                <Form.Label>Краткое описание книги</Form.Label>
+                <Form.Control type="text" name="descriptions" />
+              </Form.Group>
+
+              <Form.Group className="mb-3">
+                <Form.Label>Личные комментарии</Form.Label>
+                <Form.Control type="text" name="comment" />
+              </Form.Group>
+
+              <Form.Group className="mb-3">
+                <Form.Label>Фото обложки</Form.Label>
+                <Form.Control type="file" name="cover" accept="image/*" />
+              </Form.Group>
               <Button type="submit">Создать</Button>
             </Form>
           )}
@@ -53,10 +73,10 @@ export default function HomePage({ user }) {
       )}
 
       <Row>
-        {contents.map((content) => (
-          <Col sm={3} key={content.id}>
+        {books.map((book) => (
+          <Col sm={3} key={book.id}>
             <ContentCard
-              news={content}
+              book={book}
               user={user}
               deleteHandler={deleteHandler}
             />
