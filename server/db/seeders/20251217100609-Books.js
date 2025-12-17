@@ -8,7 +8,7 @@ module.exports = {
         title: 'Мастер и Маргарита',
         author: 'Михаил Булгаков',
         description: 'Гениальный роман о любви, творчестве и вечных вопросах бытия. Сатана прибывает в Москву 1930-х годов, чтобы устроить бал и встретиться с Мастером — писателем, сжигающим свою рукопись.',
-        image: 'https://cv6.litres.ru/pub/c/elektronnaya-kniga/cover_415/66924623-mihail-bulgakov-master-i-margarita-66924623.jpg',
+        image: 'https://ir.ozone.ru/s3/multimedia-w/c1000/6900779696.jpg',
         userId: 1, // Анна
         createdAt: new Date('2024-01-15'),
         updatedAt: new Date('2024-01-15')
@@ -17,7 +17,7 @@ module.exports = {
         title: '1984',
         author: 'Джордж Оруэлл',
         description: 'Антиутопия о тоталитарном обществе, где за каждым следят, историю переписывают, а любовь запрещена. "Большой Брат смотрит на тебя".',
-        image: 'https://cv9.litres.ru/pub/c/elektronnaya-kniga/cover_415/171041-dzhordzh-oruell-1984-171041.jpg',
+        image: 'https://img.labirint.ru/images/comments_pic/2252/0_e5263dc8ed0d430a2643efcb176fc130_1672160753.jpg',
         userId: 1, // Максим
         createdAt: new Date('2024-02-10'),
         updatedAt: new Date('2024-02-10')
@@ -26,7 +26,7 @@ module.exports = {
         title: 'Маленький принц',
         author: 'Антуан де Сент-Экзюпери',
         description: 'Философская сказка-притча о самом важном: дружбе, любви и ответственности. "Мы в ответе за тех, кого приручили".',
-        image: 'https://cv5.litres.ru/pub/c/elektronnaya-kniga/cover_415/168064-antuan-de-sent-ekzyuperi-malenkiy-princ-168064.jpg',
+        image: 'https://static.insales-cdn.com/images/products/1/6103/493508567/1.jpeg',
         userId: 2, // Елена
         createdAt: new Date('2024-01-20'),
         updatedAt: new Date('2024-01-20')
@@ -35,7 +35,7 @@ module.exports = {
         title: 'Преступление и наказание',
         author: 'Фёдор Достоевский',
         description: 'Роман о нравственных муках студента Раскольникова, совершившего убийство ради идеи. Глубокий психологический анализ совести.',
-        image: 'https://cv5.litres.ru/pub/c/elektronnaya-kniga/cover_415/170110-fedor-dostoevskiy-prestuplenie-i-nakazanie-170110.jpg',
+        image: 'https://book-present.ru/wp-content/uploads/2024/11/prestuplenie-i-nakazanie-ehksklyuzivnyj-kozhanyj-pereplet-ruchnoj-raboty-futlyar.jpg',
         userId: 1, // Анна
         createdAt: new Date('2024-03-05'),
         updatedAt: new Date('2024-03-05')
@@ -44,7 +44,7 @@ module.exports = {
         title: 'Гарри Поттер и философский камень',
         author: 'Дж. К. Роулинг',
         description: 'Первая книга культовой серии о юном волшебнике. Магия, дружба и борьба с тёмными силами.',
-        image: 'https://cv4.litres.ru/pub/c/elektronnaya-kniga/cover_415/10412508-dzh-k-rouling-garri-potter-i-filosofskiy-kamen-10412508.jpg',
+        image: 'https://avatars.mds.yandex.net/get-mpic/4973279/2a000001936758dde54cd5715de4dc60cac5/orig',
         userId: 3, // Дмитрий
         createdAt: new Date('2024-02-28'),
         updatedAt: new Date('2024-02-28')
@@ -53,7 +53,7 @@ module.exports = {
         title: 'Война и мир',
         author: 'Лев Толстой',
         description: 'Эпический роман о судьбах русских аристократических семей на фоне войн с Наполеоном.',
-        image: 'https://cv4.litres.ru/pub/c/elektronnaya-kniga/cover_415/169806-lev-tolstoy-voyna-i-mir-169806.jpg',
+        image: 'https://cdn.eksmo.ru/v2/ITD000000001087075/COVER/cover1__w820.jpg',
         userId: 1, // Максим
         createdAt: new Date('2024-01-10'),
         updatedAt: new Date('2024-01-10')
@@ -62,7 +62,7 @@ module.exports = {
         title: 'Шерлок Холмс: Собака Баскервилей',
         author: 'Артур Конан Дойл',
         description: 'Знаменитое дело Шерлока Холмса о проклятии рода Баскервилей и собаке-призраке.',
-        image: 'https://cv1.litres.ru/pub/c/elektronnaya-kniga/cover_415/175234-artur-konan-doyl-sobaka-baskerviley-175234.jpg',
+        image: 'https://s3-goods.ozstatic.by/1000/65/205/10/10205065_0.jpg',
         userId: 2, // Елена
         createdAt: new Date('2024-03-15'),
         updatedAt: new Date('2024-03-15')
@@ -71,7 +71,7 @@ module.exports = {
         title: 'Алхимик',
         author: 'Пауло Коэльо',
         description: 'Притча об андалузском пастухе Сантьяго, отправившемся на поиски своего сокровища и предназначения.',
-        image: 'https://cv5.litres.ru/pub/c/elektronnaya-kniga/cover_415/180464-paulo-koel-alhimik-180464.jpg',
+        image: 'https://ir.ozone.ru/s3/multimedia-1-9/c1000/7633509345.jpg',
         userId: 3, // Анна
         createdAt: new Date('2024-02-01'),
         updatedAt: new Date('2024-02-01')
