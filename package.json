@@ -1,0 +1,29 @@
+{
+  "name": "phase-2-project",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sunooni/Phase-2-project.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/sunooni/Phase-2-project/issues"
+  },
+  "homepage": "https://github.com/sunooni/Phase-2-project#readme",
+  "devDependencies": {
+    "@elbrus/eslint-config": "^1.1.0",
+    "@elbrus/eslint-plugin": "^1.0.1",
+    "@eslint/js": "^9.39.2",
+    "@eslint/json": "^0.14.0",
+    "eslint": "^9.39.2",
+    "globals": "^16.5.0"
+  }
+}
