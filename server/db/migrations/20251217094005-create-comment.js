@@ -1,38 +1,46 @@
 'use strict';
+
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('Users', {
+    await queryInterface.createTable('Comments', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-      name: {
+      userId: {
+        type: Sequelize.INTEGER,
         allowNull: false,
-        type: Sequelize.STRING,
+        references: {
+          model: 'Users',
+          key: 'id',
+        },
+        onUpdate: 'CASCADE',
+        onDelete: 'CASCADE',
       },
-      email: {
+      bookId: {
+        type: Sequelize.INTEGER,
         allowNull: false,
-        unique: true,
-        type: Sequelize.STRING,
+        references: {
+          model: 'Books',
+          key: 'id',
+        },
+        onUpdate: 'CASCADE',
+        onDelete: 'CASCADE',
       },
-      phone: {
+      body: {
+        type: Sequelize.TEXT,
+        allowNull: false,
+      },
+      sentimentScore: {
+        type: Sequelize.FLOAT,
         allowNull: true,
-        type: Sequelize.STRING,
       },
-      hashpass: {
-        allowNull: false,
-        type: Sequelize.STRING,
-      },
-      avatarUrl: {
-        type: Sequelize.STRING,
-        allowNull: true,
-      },
-      role: {
-        type: Sequelize.ENUM('user', 'moderator', 'admin'),
-        defaultValue: 'user',
+      isEmotional: {
+        type: Sequelize.BOOLEAN,
+        defaultValue: false,
       },
       createdAt: {
         allowNull: false,
@@ -47,6 +55,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('Users');
+    await queryInterface.dropTable('Comments');
   },
 };

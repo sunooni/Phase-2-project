@@ -13,7 +13,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
 app.use('/api/auth', authRouter);
-app.use('/api/contents', contentRouter)
+app.use('/api/contents', contentRouter);
 
 // eslint-disable-next-line no-unused-vars
 app.use((err, req, res, next) => {
