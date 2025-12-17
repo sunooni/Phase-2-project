@@ -44,15 +44,15 @@ class BookController {
     if (book.userId !== user.id) {
       return res.sendStatus(403);
     }
-    await BookService.deleteContent(id);
+    await BookService.deleteBook(id);
     res.sendStatus(204);
   }
 
-  // static async getBookByAuthor(req, res) {
-  //   const { user } = res.locals;
-  //   const content = await ContentService.getContentByAuthor(user.id);
-  //   return res.json(content);
-  // }
+  static async getBookByFavorites(req, res) {
+    const { user } = res.locals;
+    const book = await BookService.getBookByFaforites(user.id);
+    return res.json(book);
+  }
 }
 
 module.exports = BookController;

@@ -27,17 +27,17 @@ class BookService {
       return true;
   }
 
-  // static async getBookByAuthor(userId) {
-  //     return Book.findAll({
-  //       where: { userId },
-  //       include: [
-  //         {
-  //           model: User,
-  //           attributes: ['id', 'name', 'email'],
-  //         },
-  //       ],
-  //     });
-  //   } 
+  static async getBookByFaforites(userId) {
+      return Book.findAll({
+        where: { userId },
+        include: [
+          {
+            model: User,
+            attributes: ['id', 'name', 'email'],
+          },
+        ],
+      });
+    } 
 
 }
 

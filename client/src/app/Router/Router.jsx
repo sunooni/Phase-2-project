@@ -31,9 +31,9 @@ function Router({ registerHandler, loginHandler, logoutHandler, user, deleteHand
           />
         </Route>
         <Route
-          path="/contents/my"
+          path="/books/my"
           element={
-            <ProtectedRoute isAllowed={!!user} redirectTo="/contents/my">
+            <ProtectedRoute isAllowed={!!user} redirectTo="/books/my">
               <AuthorPage user={user} deleteHandler={deleteHandler}/>
             </ProtectedRoute>
           }

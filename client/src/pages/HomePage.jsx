@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Button, Col, Container, Form, Row } from "react-bootstrap";
-import ContentCard from "../entities/ui/ContentCard";
+import ContentCard from "../entities/ui/BookCard";
 import axios from "axios";
 import axiosinstance from "../shared/axiosinstance";
 import AuthorPage from "./AuthorPage";

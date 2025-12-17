@@ -2,7 +2,7 @@ const express = require('express');
 const morgan = require('morgan');
 
 const authRouter = require('./routes/auth.route');
-const contentRouter = require('./routes/content.route')
+const bookRouter = require('./routes/book.route')
 const cookieParser = require('cookie-parser')
 
 const app = express();
@@ -13,7 +13,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
 app.use('/api/auth', authRouter);
-app.use('/api/contents', contentRouter);
+app.use('/api/books', bookRouter);
 
 // eslint-disable-next-line no-unused-vars
 app.use((err, req, res, next) => {

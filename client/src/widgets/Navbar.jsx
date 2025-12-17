@@ -24,7 +24,7 @@ export default function CustomNavbar({ user, logoutHandler }) {
           </Nav>
           {user && (
             <Nav>
-              <Nav.Link as={Link} to="/books/my">Избранное</Nav.Link>
+              <Nav.Link as={Link} to="/books/myFavorite">Избранное</Nav.Link>
               <Nav.Link onClick={logoutHandler}>Выйти</Nav.Link>
             </Nav>
           )}
