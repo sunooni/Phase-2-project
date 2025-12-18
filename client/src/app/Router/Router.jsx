@@ -8,11 +8,21 @@ import ProtectedRoute from "../../shared/ProtectedRoute";
 import FavoritePage from "../../pages/FavoritePage";
 import BookDetailPage from "../../pages/BookDetailPage";
 
-function Router({ registerHandler, loginHandler, logoutHandler, user, deleteHandler }) {
+function Router({
+  registerHandler,
+  loginHandler,
+  logoutHandler,
+  user,
+  deleteHandler,
+}) {
   return (
     <BrowserRouter>
       <Routes>
+      
+
         <Route element={<Layout logoutHandler={logoutHandler} user={user} />}>
+
+        
           <Route path="/" element={<HomePage user={user} />} />
           <Route path="/books/:id" element={
             <ProtectedRoute isAllowed={!!user} redirectTo="/login">
@@ -41,3 +51,5 @@ function Router({ registerHandler, loginHandler, logoutHandler, user, deleteHand
 }
 
 export default Router;
+
+
