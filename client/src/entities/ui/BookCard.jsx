@@ -1,6 +1,4 @@
 import React from "react";
-import { Button } from "react-bootstrap";
-import Card from "react-bootstrap/Card";
 import { useNavigate } from "react-router";
 import axiosinstance from "../../shared/axiosinstance";
 
@@ -8,8 +6,13 @@ function BookCard({ book, user, deleteHandler, isFavoritePage = false }) {
   const navigate = useNavigate();
 
   const addToFavorites = async () => {
-    await axiosinstance.post("/favorites", { bookId: book.id });
-    navigate("/favorites");
+    try {
+      await axiosinstance.post("/favorites", { bookId: book.id });
+      navigate("/favorites");
+    } catch (error) {
+      console.error('Ошибка при добавлении в избранное:', error);
+      alert(error.response?.data?.message || 'Не удалось добавить книгу в избранное');
+    }
   };
 
   const handleDetails = () => {
@@ -17,47 +20,55 @@ function BookCard({ book, user, deleteHandler, isFavoritePage = false }) {
   };
 
   return (
-    <>
-      <Card className="mb-2" style={{ width: "20rem" }}>
-        <Card.Img variant="top" src={book.image} />
-        <Card.Body>
-          <Card.Title>{book.title}</Card.Title>
-          <Card.Subtitle className="mb-2 text-muted">
-            {book.author}
-          </Card.Subtitle>
-          {book.genre && (
-            <div className="mb-2">
-              <span className="badge bg-secondary">{book.genre}</span>
-            </div>
-          )}
-
-          <Button onClick={handleDetails}>Подробнее</Button>
-          {!isFavoritePage && (
-            <Button variant="info" onClick={addToFavorites}>
+    <div className="book-card">
+      <img 
+        src={book.image} 
+        alt={book.title}
+        className="book-card-image"
+        onError={(e) => {
+          e.target.src = 'https://via.placeholder.com/300x400?text=Обложка';
+        }}
+      />
+      <div className="book-card-body">
+        <h3 className="book-card-title">{book.title}</h3>
+        <p className="book-card-subtitle">{book.author}</p>
+        {book.genre && (
+          <div className="mb-2">
+            <span className="badge badge-secondary">{book.genre}</span>
+          </div>
+        )}
+        <div className="book-card-actions">
+          <button className="btn btn-primary" onClick={handleDetails}>
+            Подробнее
+          </button>
+          {user && !isFavoritePage && (
+            <button className="btn btn-info" onClick={addToFavorites}>
               ⭐ В избранное
-            </Button>
+            </button>
           )}
-
           {isFavoritePage && deleteHandler && (
-            <Button
-              variant="danger"
+            <button
+              className="btn btn-danger"
               onClick={() => {
-                deleteHandler(book.favoriteId);
+                if (book.favoriteId) {
+                  deleteHandler(book.favoriteId);
+                }
               }}
             >
               Удалить из избранного
-            </Button>
+            </button>
           )}
           {user?.id === book.userId && !isFavoritePage && (
-            <>
-              <Button variant="danger" onClick={() => deleteHandler(book.id)}>
-                Удалить
-              </Button>
-            </>
+            <button 
+              className="btn btn-danger" 
+              onClick={() => deleteHandler(book.id)}
+            >
+              Удалить
+            </button>
           )}
-        </Card.Body>
-      </Card>
-    </>
+        </div>
+      </div>
+    </div>
   );
 }
 

@@ -1,0 +1,144 @@
+/* === ФОРМЫ === */
+.book-form {
+  background: var(--color-paper);
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: var(--shadow-medium);
+  margin-bottom: 2rem;
+  animation: fadeIn 0.5s ease;
+}
+
+.radio-group {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.radio-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+}
+
+.radio-label input[type="radio"] {
+  width: auto;
+  margin: 0;
+}
+
+/* === ФИЛЬТРЫ === */
+.filters-section {
+  margin-bottom: 2rem;
+}
+
+.filters-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.active-filters {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.active-filters small {
+  color: #777;
+}
+
+.filters-panel {
+  background: var(--color-paper);
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: var(--shadow-soft);
+  border: 2px solid var(--color-warm-beige);
+  animation: fadeIn 0.3s ease;
+}
+
+.filters-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.chevron {
+  margin-left: 0.5rem;
+  transition: transform var(--transition-fast);
+}
+
+.btn-sm {
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+}
+
+/* === СТАТИСТИКА === */
+.stats-section {
+  margin: 3rem 0;
+}
+
+.justify-center {
+  justify-content: center;
+}
+
+.stat-card {
+  text-align: center;
+  padding: 2rem;
+  background: var(--color-paper);
+  border-radius: 12px;
+  box-shadow: var(--shadow-medium);
+  margin-bottom: 1rem;
+  transition: all var(--transition-medium);
+}
+
+.stat-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-large);
+}
+
+.stat-number {
+  font-size: 3rem;
+  margin: 0;
+  color: var(--color-brown);
+  font-weight: 600;
+}
+
+.stat-label {
+  margin: 0.5rem 0 0 0;
+  color: #666;
+  font-size: 1.125rem;
+}
+
+/* === УТИЛИТЫ === */
+.justify-content-between {
+  justify-content: space-between;
+}
+
+.d-flex {
+  display: flex;
+}
+
+@media (max-width: 768px) {
+  .filters-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .active-filters {
+    justify-content: flex-start;
+  }
+  
+  .filters-actions {
+    flex-direction: column;
+  }
+  
+  .filters-actions .btn {
+    width: 100%;
+  }
+}
+

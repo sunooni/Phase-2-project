@@ -1,0 +1,586 @@
+/* === ГЛОБАЛЬНЫЕ СТИЛИ === */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  /* Мягкие книжные цвета */
+  --color-cream: #faf8f3;
+  --color-paper: #fffef9;
+  --color-ink: #2c3e50;
+  --color-brown: #8b6f47;
+  --color-warm-beige: #e8ddd4;
+  --color-gold: #d4af37;
+  --color-crimson: #8b2635;
+  --color-sage: #87a96b;
+  
+  /* Новогодние цвета */
+  --color-xmas-red: #c92a2a;
+  --color-xmas-green: #2b8a3e;
+  --color-xmas-gold: #fcc419;
+  
+  /* Тени */
+  --shadow-soft: 0 2px 8px rgba(0, 0, 0, 0.08);
+  --shadow-medium: 0 4px 16px rgba(0, 0, 0, 0.12);
+  --shadow-large: 0 8px 32px rgba(0, 0, 0, 0.16);
+  
+  /* Переходы */
+  --transition-fast: 0.2s ease;
+  --transition-medium: 0.3s ease;
+  --transition-slow: 0.5s ease;
+}
+
+body {
+  font-family: 'Georgia', 'Times New Roman', serif;
+  background: linear-gradient(135deg, var(--color-cream) 0%, var(--color-paper) 100%);
+  color: var(--color-ink);
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+/* === ТИПОГРАФИКА === */
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 600;
+  color: var(--color-ink);
+  margin-bottom: 1rem;
+  letter-spacing: 0.5px;
+}
+
+h1 {
+  font-size: 2.5rem;
+  font-family: 'Georgia', serif;
+}
+
+h2 {
+  font-size: 2rem;
+}
+
+p {
+  margin-bottom: 1rem;
+  color: #555;
+}
+
+/* === КОНТЕЙНЕР === */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.container-narrow {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+/* === КНОПКИ === */
+.btn {
+  display: inline-block;
+  padding: 0.75rem 1.5rem;
+  font-family: 'Georgia', serif;
+  font-size: 1rem;
+  font-weight: 500;
+  text-align: center;
+  text-decoration: none;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all var(--transition-medium);
+  box-shadow: var(--shadow-soft);
+  margin: 0.25rem;
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-medium);
+}
+
+.btn:active {
+  transform: translateY(0);
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--color-brown) 0%, #6b5638 100%);
+  color: white;
+}
+
+.btn-primary:hover {
+  background: linear-gradient(135deg, #6b5638 0%, var(--color-brown) 100%);
+}
+
+.btn-info {
+  background: linear-gradient(135deg, var(--color-sage) 0%, #6b8e4f 100%);
+  color: white;
+}
+
+.btn-info:hover {
+  background: linear-gradient(135deg, #6b8e4f 0%, var(--color-sage) 100%);
+}
+
+.btn-danger {
+  background: linear-gradient(135deg, var(--color-crimson) 0%, #6b1a25 100%);
+  color: white;
+}
+
+.btn-danger:hover {
+  background: linear-gradient(135deg, #6b1a25 0%, var(--color-crimson) 100%);
+}
+
+.btn-secondary {
+  background: var(--color-warm-beige);
+  color: var(--color-ink);
+}
+
+.btn-secondary:hover {
+  background: #d4c5b8;
+}
+
+.btn-outline {
+  background: transparent;
+  border: 2px solid var(--color-brown);
+  color: var(--color-brown);
+}
+
+.btn-outline:hover {
+  background: var(--color-brown);
+  color: white;
+}
+
+/* === КАРТОЧКИ === */
+.book-card {
+  background: var(--color-paper);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: var(--shadow-medium);
+  transition: all var(--transition-medium);
+  position: relative;
+  margin-bottom: 1.5rem;
+  animation: fadeInUp 0.6s ease forwards;
+  opacity: 0;
+}
+
+.book-card:nth-child(1) { animation-delay: 0.1s; }
+.book-card:nth-child(2) { animation-delay: 0.2s; }
+.book-card:nth-child(3) { animation-delay: 0.3s; }
+.book-card:nth-child(4) { animation-delay: 0.4s; }
+.book-card:nth-child(5) { animation-delay: 0.5s; }
+.book-card:nth-child(6) { animation-delay: 0.6s; }
+
+.book-card:hover {
+  transform: translateY(-8px);
+  box-shadow: var(--shadow-large);
+}
+
+.book-card-image {
+  width: 100%;
+  height: 300px;
+  object-fit: cover;
+  display: block;
+}
+
+.book-card-body {
+  padding: 1.5rem;
+}
+
+.book-card-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--color-ink);
+  margin-bottom: 0.5rem;
+  line-height: 1.4;
+}
+
+.book-card-subtitle {
+  font-size: 1rem;
+  color: #777;
+  margin-bottom: 1rem;
+  font-style: italic;
+}
+
+.book-card-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+/* === НОВОГОДНЯЯ АНИМАЦИЯ ФОНАРИКОВ === */
+.book-card {
+  position: relative;
+}
+
+.book-card::before {
+  content: '';
+  position: absolute;
+  top: -3px;
+  left: -3px;
+  right: -3px;
+  bottom: -3px;
+  background: linear-gradient(
+    45deg,
+    var(--color-xmas-red),
+    var(--color-xmas-gold),
+    var(--color-xmas-green),
+    var(--color-xmas-gold),
+    var(--color-xmas-red)
+  );
+  background-size: 200% 200%;
+  border-radius: 12px;
+  z-index: -1;
+  opacity: 0;
+  filter: blur(10px);
+  animation: xmasGlow 4s ease-in-out infinite;
+  animation-delay: calc(var(--card-index, 0) * 0.4s);
+  transition: opacity var(--transition-medium);
+}
+
+.book-card:hover::before {
+  opacity: 0.7;
+  animation-duration: 2s;
+}
+
+@keyframes xmasGlow {
+  0% {
+    background-position: 0% 50%;
+    opacity: 0.4;
+    transform: scale(1);
+  }
+  25% {
+    background-position: 100% 50%;
+    opacity: 0.6;
+  }
+  50% {
+    background-position: 200% 50%;
+    opacity: 0.8;
+    transform: scale(1.02);
+  }
+  75% {
+    background-position: 100% 50%;
+    opacity: 0.6;
+  }
+  100% {
+    background-position: 0% 50%;
+    opacity: 0.4;
+    transform: scale(1);
+  }
+}
+
+/* Маленькие фонарики в углах карточки */
+.book-card::after {
+  content: '✨';
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  font-size: 1.5rem;
+  animation: sparkle 2.5s ease-in-out infinite;
+  opacity: 0.6;
+  z-index: 2;
+  pointer-events: none;
+  filter: drop-shadow(0 0 4px rgba(255, 215, 0, 0.6));
+}
+
+.book-card:hover::after {
+  animation-duration: 1.5s;
+  opacity: 1;
+}
+
+@keyframes sparkle {
+  0%, 100% {
+    opacity: 0.5;
+    transform: scale(0.9) rotate(0deg);
+    filter: drop-shadow(0 0 4px rgba(255, 215, 0, 0.4));
+  }
+  25% {
+    opacity: 0.8;
+    transform: scale(1.1) rotate(90deg);
+    filter: drop-shadow(0 0 8px rgba(255, 215, 0, 0.8));
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.3) rotate(180deg);
+    filter: drop-shadow(0 0 12px rgba(255, 215, 0, 1));
+  }
+  75% {
+    opacity: 0.8;
+    transform: scale(1.1) rotate(270deg);
+    filter: drop-shadow(0 0 8px rgba(255, 215, 0, 0.8));
+  }
+}
+
+/* === АНИМАЦИИ === */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.fade-in {
+  animation: fadeIn 0.5s ease forwards;
+}
+
+/* Анимация при прокрутке */
+@keyframes slideInFromBottom {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.scroll-animate {
+  animation: slideInFromBottom 0.6s ease forwards;
+}
+
+/* Плавные переходы страниц */
+.page-transition {
+  animation: fadeIn 0.4s ease;
+}
+
+/* === ДОПОЛНИТЕЛЬНЫЕ НОВОГОДНИЕ ЭФФЕКТЫ === */
+.book-card:hover {
+  position: relative;
+}
+
+/* Легкое свечение при наведении */
+.book-card:hover .book-card-image {
+  filter: brightness(1.05) saturate(1.1);
+  transition: filter var(--transition-medium);
+}
+
+/* === СЕТКА === */
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  margin: -0.75rem;
+}
+
+.col {
+  flex: 1;
+  padding: 0.75rem;
+}
+
+.col-md-6 {
+  flex: 0 0 50%;
+  max-width: 50%;
+  padding: 0.75rem;
+}
+
+.col-lg-4 {
+  flex: 0 0 33.333333%;
+  max-width: 33.333333%;
+  padding: 0.75rem;
+}
+
+.col-xl-3 {
+  flex: 0 0 25%;
+  max-width: 25%;
+  padding: 0.75rem;
+}
+
+@media (max-width: 992px) {
+  .col-xl-3 {
+    flex: 0 0 33.333333%;
+    max-width: 33.333333%;
+  }
+}
+
+@media (max-width: 768px) {
+  .col-md-6,
+  .col-lg-4,
+  .col-xl-3 {
+    flex: 0 0 50%;
+    max-width: 50%;
+  }
+}
+
+@media (max-width: 576px) {
+  .col-md-6,
+  .col-lg-4,
+  .col-xl-3 {
+    flex: 0 0 100%;
+    max-width: 100%;
+  }
+  
+  .container {
+    padding: 1rem;
+  }
+}
+
+/* === ФОРМЫ === */
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.form-label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  color: var(--color-ink);
+}
+
+.form-control,
+.form-select {
+  width: 100%;
+  padding: 0.75rem;
+  font-family: 'Georgia', serif;
+  font-size: 1rem;
+  border: 2px solid var(--color-warm-beige);
+  border-radius: 8px;
+  background: white;
+  color: var(--color-ink);
+  transition: all var(--transition-fast);
+}
+
+.form-control:focus,
+.form-select:focus {
+  outline: none;
+  border-color: var(--color-brown);
+  box-shadow: 0 0 0 3px rgba(139, 111, 71, 0.1);
+}
+
+.form-text {
+  display: block;
+  margin-top: 0.5rem;
+  font-size: 0.875rem;
+  color: #777;
+}
+
+/* === БЕЙДЖИ === */
+.badge {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  border-radius: 20px;
+  margin: 0.25rem;
+}
+
+.badge-secondary {
+  background: var(--color-warm-beige);
+  color: var(--color-ink);
+}
+
+/* === ДЕТАЛИ КНИГИ === */
+.book-detail-image {
+  background: var(--color-paper);
+  padding: 1rem;
+  border-radius: 12px;
+  box-shadow: var(--shadow-medium);
+  text-align: center;
+}
+
+.book-detail-image img {
+  max-width: 100%;
+  max-height: 500px;
+  object-fit: contain;
+  border-radius: 8px;
+}
+
+.book-detail-actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.review-form {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.review-form .form-control {
+  flex: 1;
+}
+
+/* === УТИЛИТЫ === */
+.text-center {
+  text-align: center;
+}
+
+.gap-2 {
+  gap: 0.5rem;
+}
+
+.mb-2 { margin-bottom: 0.5rem; }
+.mb-3 { margin-bottom: 1rem; }
+.mb-4 { margin-bottom: 1.5rem; }
+.mt-2 { margin-top: 0.5rem; }
+.mt-3 { margin-top: 1rem; }
+.mt-4 { margin-top: 1.5rem; }
+
+.py-4 {
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+}
+
+/* === СКРОЛЛ === */
+::-webkit-scrollbar {
+  width: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-cream);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-brown);
+  border-radius: 6px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #6b5638;
+}
+
+/* === ЗАГРУЗКА === */
+.loading {
+  text-align: center;
+  padding: 3rem;
+  font-size: 1.25rem;
+  color: var(--color-brown);
+}
+
+.loading::after {
+  content: '...';
+  animation: dots 1.5s steps(4, end) infinite;
+}
+
+@keyframes dots {
+  0%, 20% { content: '.'; }
+  40% { content: '..'; }
+  60%, 100% { content: '...'; }
+}
+
+/* === FOOTER === */
+footer {
+  background: var(--color-brown);
+  color: white;
+  padding: 2rem;
+  text-align: center;
+  margin-top: 4rem;
+  box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.1);
+}
+
+footer p {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.9);
+}
+

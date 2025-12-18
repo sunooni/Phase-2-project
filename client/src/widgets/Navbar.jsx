@@ -1,35 +1,54 @@
-import { Container, Nav, Navbar } from "react-bootstrap";
+import { useState } from "react";
 import { Link } from "react-router";
+import "../styles/navbar.css";
 
 export default function CustomNavbar({ user, logoutHandler }) {
+  const [isOpen, setIsOpen] = useState(false);
+
   return (
-    <Navbar expand="lg" className="bg-body-tertiary">
-      <Container>
-        <Navbar.Brand as={Link} to="/">
-          Главная
-        </Navbar.Brand>
-        <Navbar.Toggle aria-controls="basic-navbar-nav" />
-        <Navbar.Collapse id="basic-navbar-nav">
-          <Nav className="me-auto">
-            {!user && (
-              <>
-                <Nav.Link as={Link} to="/registration">
+    <nav className="navbar">
+      <div className="navbar-container">
+        <Link to="/" className="navbar-brand">
+          📚 Книжный уголок
+        </Link>
+        <button 
+          className="navbar-toggle" 
+          onClick={() => setIsOpen(!isOpen)}
+          aria-label="Toggle navigation"
+        >
+          ☰
+        </button>
+        <ul className={`navbar-nav ${isOpen ? 'active' : ''}`}>
+          {!user && (
+            <>
+              <li>
+                <Link to="/registration" className="nav-link">
                   Зарегистрироваться
-                </Nav.Link>
-                <Nav.Link as={Link} to="/login">
+                </Link>
+              </li>
+              <li>
+                <Link to="/login" className="nav-link">
                   Войти
-                </Nav.Link>
-              </>
-            )}
-          </Nav>
-          {user && (
-            <Nav>
-              <Nav.Link as={Link} to="/favorites">Избранное</Nav.Link>
-              <Nav.Link onClick={logoutHandler}>Выйти</Nav.Link>
-            </Nav>
+                </Link>
+              </li>
+            </>
           )}
-        </Navbar.Collapse>
-      </Container>
-    </Navbar>
+          {user && (
+            <>
+              <li>
+                <Link to="/favorites" className="nav-link">
+                  ⭐ Избранное
+                </Link>
+              </li>
+              <li>
+                <a className="nav-link" onClick={logoutHandler}>
+                  Выйти
+                </a>
+              </li>
+            </>
+          )}
+        </ul>
+      </div>
+    </nav>
   );
 }
