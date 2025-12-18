@@ -25,7 +25,7 @@ function BookCard({ book, user, deleteHandler, isFavoritePage = false }) {
           <Card.Title>{book.author}</Card.Title>
 
           <Button onClick={handleDetails}>Подробнее</Button>
-          {!isFavoritePage && (
+          {user && !isFavoritePage && (
             <Button variant="info" onClick={addToFavorites}>
               ⭐ В избранное
             </Button>

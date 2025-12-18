@@ -39,10 +39,11 @@ export default function HomePage({ user }) {
   const submitHandler = async (e) => {
     e.preventDefault();
     const formData = new FormData(e.target);
-    const data = Object.fromEntries(formData);
+    formData.append('userId', user.id);
+    // const data = Object.fromEntries(formData);
 
-    const response = await axios.post("/api/books", data);
-    setBooks([...books, response.data]);
+    const response = await axiosinstance.post("/books", formData);
+    setBooks([response.data, ...books]);
     setShowForm(false);
     setImageType("file");
     setTextType("file");
@@ -165,7 +166,7 @@ export default function HomePage({ user }) {
         </div>
       )}
 
-      <Row>
+      <Row >
         {books.map((book) => (
           <Col sm={3} key={book.id}>
             <ContentCard

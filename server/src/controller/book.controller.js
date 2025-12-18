@@ -16,13 +16,27 @@ class BookController {
   }
 
   static async createBook(req, res) {
-    const data = req.body;
-    const book = await BookService.createBook({
-      ...data,
+  try {
+    let image = null;
+    if (req.file) {
+      image = `/uploads/${req.file.filename}`;
+    } else if (req.body.imageUrl) {
+      image = req.body.imageUrl;
+    }
+    const data = {
+      ...req.body,
+      image,
       userId: res.locals.user.id,
-    });
+    };
+    delete data.imageUrl; 
+    
+    const book = await BookService.createBook(data);
     return res.status(201).json(book);
+  } catch (error) {
+    console.error('Create book error:', error);
+    return res.status(500).json({ error: 'Ошибка создания книги' });
   }
+}
 
   static async updateBook(req, res) {
     const { id } = req.params;
