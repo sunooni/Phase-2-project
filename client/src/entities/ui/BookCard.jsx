@@ -22,7 +22,14 @@ function BookCard({ book, user, deleteHandler, isFavoritePage = false }) {
         <Card.Img variant="top" src={book.image} />
         <Card.Body>
           <Card.Title>{book.title}</Card.Title>
-          <Card.Title>{book.author}</Card.Title>
+          <Card.Subtitle className="mb-2 text-muted">
+            {book.author}
+          </Card.Subtitle>
+          {book.genre && (
+            <div className="mb-2">
+              <span className="badge bg-secondary">{book.genre}</span>
+            </div>
+          )}
 
           <Button onClick={handleDetails}>Подробнее</Button>
           {user && !isFavoritePage && (
@@ -30,7 +37,7 @@ function BookCard({ book, user, deleteHandler, isFavoritePage = false }) {
               ⭐ В избранное
             </Button>
           )}
-          
+
           {isFavoritePage && deleteHandler && (
             <Button
               variant="danger"

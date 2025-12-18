@@ -26,6 +26,8 @@ const upload = multer({ storage });
 
 router.get('/', BookController.getAllBooks);
 router.post('/', verifyAccessToken, upload.single('cover'), BookController.createBook);
+router.get('/genres', BookController.getGenres);
+router.post('/', verifyRefreshToken, BookController.createBook);
 router.get('/:id', verifyAccessToken, validateId, BookController.getBookById);
 router.put('/:id', BookController.updateBook);
 router.delete('/:id', verifyAccessToken, validateId, BookController.deleteBook);

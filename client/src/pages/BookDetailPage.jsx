@@ -87,6 +87,13 @@ export default function BookDetailPage() {
         <Col md={8}>
           <h1>{book.title}</h1>
           <h2>Автор: {book.author}</h2>
+          {book.genre && (
+            <div className="mb-3">
+              <span className="badge bg-primary fs-6 px-3 py-2">
+                {book.genre}
+              </span>
+            </div>
+          )}
 
           <p>
             Оцени книгу: {renderStars(hoverRating || userRating)}
