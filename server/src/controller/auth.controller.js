@@ -32,11 +32,15 @@ class AuthController {
   }
 
   static login = async (req, res) => {
-    const user = AuthService.login(req.body);
+    try {
+      const user = await AuthService.login(req.body);
 
-    const { accessToken, refreshToken } = generateTokens({ user })
+      const { accessToken, refreshToken } = generateTokens({ user })
 
-    res.cookie("refreshToken", refreshToken, cookieConfig.refresh).json({ user, accessToken })
+      res.cookie("refreshToken", refreshToken, cookieConfig.refresh).json({ user, accessToken })
+    } catch (error) {
+      res.status(401).json({ message: error.message });
+    }
   }
 }
 
