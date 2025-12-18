@@ -10,12 +10,25 @@ function App() {
   const registerHandler = async (e) => {
     e.preventDefault();
 
-    const formData = new FormData(e.target);
+    try {
+      const formData = new FormData(e.target);
+      const data = Object.fromEntries(formData);
 
-    const data = Object.fromEntries(formData);
-    const response = await axios.post("/api/auth/registration", data);
-    setUser(response.data.user);
-    setAccessToken(response.data.accessToken);
+      console.log("Registration data being sent:", data);
+
+      const response = await axios.post("/api/auth/registration", data);
+      setUser(response.data.user);
+      setAccessToken(response.data.accessToken);
+    } catch (error) {
+      console.error(
+        "Registration error:",
+        error.response?.data || error.message
+      );
+      alert(
+        "Ошибка регистрации: " +
+          (error.response?.data?.message || error.message)
+      );
+    }
   };
 
   const loginHandler = async (e) => {
