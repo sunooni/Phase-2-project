@@ -12,10 +12,12 @@
     "axios": "^1.13.2",
     "bootstrap": "^5.3.8",
     "gigachat": "^0.0.18",
+    "i18next": "^25.7.3",
     "multer": "^2.0.2",
     "react": "^19.2.0",
     "react-bootstrap": "^2.10.10",
     "react-dom": "^19.2.0",
+    "react-i18next": "^16.5.0",
     "react-icons": "^5.5.0",
     "react-router": "^7.9.6"
   },

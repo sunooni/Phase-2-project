@@ -1,0 +1,20 @@
+{
+  "welcome": "Добро пожаловать в книжный уголок",
+  "personalCabinet": "Личный кабинет {{name}}",
+  "addBook": "+Добавить книгу",
+  "bookTitle": "Название книги",
+  "bookAuthor": "Автор книги", 
+  "bookDescription": "Краткое описание книги",
+  "bookComment": "Личные комментарии",
+  "bookCover": "Фото обложки",
+  "fileUpload": "Загрузить файл",
+  "imageUrl": "Ссылка на изображение",
+  "create": "Создать",
+  "books": "книг",
+  "authors": "авторов",
+  "ratings": "оценок",
+  "details": "Подробнее",
+  "addFavorite": "⭐ В избранное",
+  "delete": "Удалить",
+  "deleteFavorite": "Удалить из избранного"
+}
