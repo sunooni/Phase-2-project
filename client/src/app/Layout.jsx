@@ -2,6 +2,7 @@ import React from 'react';
 import Footer from '../widgets/Footer';
 import { Outlet } from 'react-router';
 import CustomNavbar from '../widgets/Navbar';
+import ChatBot from '../entities/ui/ChatBot';
 
 export default function Layout({user, logoutHandler}) {
   return (
@@ -15,6 +16,7 @@ export default function Layout({user, logoutHandler}) {
       <footer>
         <Footer />
       </footer>
+      <ChatBot user={user} />
     </>
   );
 }
