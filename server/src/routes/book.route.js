@@ -7,6 +7,7 @@ const validateId = require('../middlewares/validateUser')
 
 
 router.get('/', BookController.getAllBooks);
+router.get('/genres', BookController.getGenres);
 router.post('/', verifyRefreshToken, BookController.createBook);
 router.get('/:id', verifyAccessToken, validateId, BookController.getBookById);
 router.put('/:id', BookController.updateBook);

@@ -2,8 +2,21 @@ const BookService = require('../services/book.service');
 
 class BookController {
   static async getAllBooks(req, res) {
-    const book = await BookService.getAllBooks();
-    return res.json(book);
+    try {
+      const { genre, author, minRating, sortByRating } = req.query;
+      const filters = {};
+
+      if (genre) filters.genre = genre;
+      if (author) filters.author = author;
+      if (minRating) filters.minRating = parseFloat(minRating);
+      if (sortByRating) filters.sortByRating = sortByRating; // 'asc' или 'desc'
+
+      const books = await BookService.getAllBooks(filters);
+      return res.json(books);
+    } catch (error) {
+      console.error('Error getting books:', error);
+      return res.status(500).json({ error: 'Ошибка получения книг' });
+    }
   }
 
   static async getBookById(req, res) {
@@ -46,6 +59,16 @@ class BookController {
     }
     await BookService.deleteBook(id);
     res.sendStatus(204);
+  }
+
+    static async getGenres(req, res) {
+    try {
+      const genres = await BookService.getUniqueGenres();
+      return res.json(genres);
+    } catch (error) {
+      console.error('Error getting genres:', error);
+      return res.status(500).json({ error: 'Ошибка получения жанров' });
+    }
   }
 
 }
