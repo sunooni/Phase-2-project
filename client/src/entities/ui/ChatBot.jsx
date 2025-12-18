@@ -24,11 +24,13 @@ export default function ChatBot({ user }) {
     setLoading(true);
 
     try {
-      const res = await axiosinstance.post('/api/ai/chat', { 
-        question: userMsg 
-      });
-      setMessages(prev => [...prev, { role: 'assistant', content: res.data.answer }]);
-    } catch (error) {
+    const res = await axiosinstance.post('/api/ai/chat', {
+      question: userMsg,
+      currentPage: window.location.pathname,  
+      userBooks: ['Мастер и Маргарита', '1984', 'Маленький принц', 'Преступление и наказание', 'Гарри Поттер и философский камень', 'Война и мир', 'Шерлок Холмс: Собака Баскервилей', 'Алхимик'] 
+    });
+    setMessages(prev => [...prev, { role: 'assistant', content: res.data.answer }]);
+  } catch (error) {
       setMessages(prev => [...prev, { role: 'assistant', content: 'Извини, библиотекарь на обеде 😴' }]);
     } finally {
       setLoading(false);
