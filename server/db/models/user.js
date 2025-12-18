@@ -23,7 +23,6 @@ module.exports = (sequelize, DataTypes) => {
     email: DataTypes.STRING,
     hashpass: DataTypes.STRING,
     role: DataTypes.STRING,
-    
   }, {
     sequelize,
     modelName: 'User',

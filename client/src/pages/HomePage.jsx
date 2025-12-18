@@ -1,25 +1,51 @@
-import React, { useEffect, useState } from "react";
-import { Button, Col, Container, Form, Row } from "react-bootstrap";
+import { useEffect, useState } from "react";
+import { Button, Col, Container, Form, Row, Card } from "react-bootstrap";
 import ContentCard from "../entities/ui/BookCard";
 import axios from "axios";
 import axiosinstance from "../shared/axiosinstance";
+import { useNavigate } from "react-router";
 
 export default function HomePage({ user }) {
   const [books, setBooks] = useState([]);
   const [showForm, setShowForm] = useState(false);
+  const [imageType, setImageType] = useState("file");
+  const [textType, setTextType] = useState("file");
+  const [stats, setStats] = useState({
+    totalBooks: 0,
+    totalAuthors: 0,
+    totalRatings: 0,
+  });
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetch("/api/books")
       .then((res) => res.json())
-      .then((data) => setBooks(data));
+      .then((data) => {
+        setBooks(data);
+        
+        const uniqueAuthors = [...new Set(data.map((book) => book.author))]
+          .length;
+        setStats({
+          totalBooks: data.length,
+          totalAuthors: uniqueAuthors,
+          totalRatings: data.reduce(
+            (acc, book) => acc + (book.ratings?.length || 0),
+            0
+          ),
+        });
+      });
   }, []);
 
   const submitHandler = async (e) => {
     e.preventDefault();
     const formData = new FormData(e.target);
     const data = Object.fromEntries(formData);
+
     const response = await axios.post("/api/books", data);
     setBooks([...books, response.data]);
+    setShowForm(false);
+    setImageType("file");
+    setTextType("file");
   };
 
   const deleteHandler = async (id) => {
@@ -27,17 +53,65 @@ export default function HomePage({ user }) {
     setBooks(books.filter((el) => el.id !== id));
   };
 
+  const handleAddBookClick = () => {
+    if (user) {
+      setShowForm(true);
+    } else {
+      navigate("/registration");
+    }
+  };
+
   return (
     <Container>
       {!user ? (
-        <h1 style={{ textAlign: "center" }}>
-          Добро пожаловать в книжный уголок
-        </h1>
+        <>
+          <h1 style={{ textAlign: "center" }}>
+            Добро пожаловать в книжный уголок
+          </h1>
+
+         
+          <div style={{ margin: "3rem 0", textAlign: "center" }}>
+            <Row className="justify-content-center">
+              <Col md={4} className="mb-3">
+                <div>
+                  <h2 style={{ fontSize: "3rem", margin: "0", color: "#333" }}>
+                    {stats.totalBooks}
+                  </h2>
+                  <p style={{ margin: "0", color: "#666" }}>книг</p>
+                </div>
+              </Col>
+              <Col md={4} className="mb-3">
+                <div>
+                  <h2 style={{ fontSize: "3rem", margin: "0", color: "#333" }}>
+                    {stats.totalAuthors}
+                  </h2>
+                  <p style={{ margin: "0", color: "#666" }}>авторов</p>
+                </div>
+              </Col>
+              <Col md={4} className="mb-3">
+                <div>
+                  <h2 style={{ fontSize: "3rem", margin: "0", color: "#333" }}>
+                    {stats.totalRatings}
+                  </h2>
+                  <p style={{ margin: "0", color: "#666" }}>оценок</p>
+                </div>
+              </Col>
+            </Row>
+          </div>
+        </>
       ) : (
         <div>
           <h2 style={{ textAlign: "center" }}>Личный кабинет {user.name}</h2>
 
-          <Button onClick={() => setShowForm(!showForm)}>
+          <Button
+            onClick={() => {
+              setShowForm(!showForm);
+              if (!showForm) {
+                setImageType("file");
+                setTextType("file");
+              }
+            }}
+          >
             +Добавить книгу
           </Button>
           {showForm && (
@@ -64,7 +138,35 @@ export default function HomePage({ user }) {
 
               <Form.Group className="mb-3">
                 <Form.Label>Фото обложки</Form.Label>
-                <Form.Control type="file" name="cover" accept="image/*" />
+                <div className="mb-2">
+                  <Form.Check
+                    type="radio"
+                    id="image-file"
+                    name="imageType"
+                    label="Загрузить файл"
+                    checked={imageType === "file"}
+                    onChange={() => setImageType("file")}
+                    inline
+                  />
+                  <Form.Check
+                    type="radio"
+                    id="image-url"
+                    name="imageType"
+                    label="Ссылка на изображение"
+                    checked={imageType === "url"}
+                    onChange={() => setImageType("url")}
+                    inline
+                  />
+                </div>
+                {imageType === "file" ? (
+                  <Form.Control type="file" name="cover" accept="image/*" />
+                ) : (
+                  <Form.Control
+                    type="url"
+                    name="imageUrl"
+                    placeholder="https://example.com/image.jpg"
+                  />
+                )}
               </Form.Group>
               <Button type="submit">Создать</Button>
             </Form>
@@ -82,6 +184,33 @@ export default function HomePage({ user }) {
             />
           </Col>
         ))}
+        <Col sm={3}>
+          <Card
+            className="mb-2"
+            style={{
+              width: "20rem",
+              cursor: "pointer",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              minHeight: "400px",
+              border: "2px dashed #ccc",
+            }}
+            onClick={handleAddBookClick}
+          >
+            <Card.Body
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                fontSize: "80px",
+                color: "#ccc",
+              }}
+            >
+              +
+            </Card.Body>
+          </Card>
+        </Col>
       </Row>
     </Container>
   );
