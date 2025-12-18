@@ -1,9 +1,9 @@
-import { Button, Container, Form, Row } from "react-bootstrap";
+import { Button, Container, Form } from "react-bootstrap";
 import { useState } from "react";
 
 export default function RegisterPage({ registerHandler }) {
   const [isLoading, setIsLoading] = useState(false);
-
+  const [contactType, setContactType] = useState("email"); 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
@@ -29,46 +29,83 @@ export default function RegisterPage({ registerHandler }) {
         </div>
         <div className="card-body p-5">
           <Form onSubmit={handleSubmit}>
-            <Row>
-              <div className="col-md-6 mb-4">
-                <Form.Group className="position-relative">
-                  <Form.Label className="form-label fw-semibold text-muted">
-                    <i className="fas fa-user me-2"></i>Имя
-                  </Form.Label>
-                  <div className="input-group">
-                    <span className="input-group-text bg-white">
-                      <i className="fas fa-user text-success"></i>
-                    </span>
-                    <Form.Control
-                      type="text"
-                      name="name"
-                      placeholder="Введите имя"
-                      className="form-control shadow-sm focus-ring"
-                      required
-                    />
-                  </div>
-                </Form.Group>
+            <Form.Group className="mb-4 position-relative">
+              <Form.Label className="form-label fw-semibold text-muted">
+                <i className="fas fa-user me-2"></i>Имя
+              </Form.Label>
+              <div className="input-group">
+                <span className="input-group-text bg-white">
+                  <i className="fas fa-user text-success"></i>
+                </span>
+                <Form.Control
+                  type="text"
+                  name="name"
+                  placeholder="Введите имя"
+                  className="form-control shadow-sm focus-ring"
+                  required
+                />
               </div>
-              <div className="col-md-6 mb-4">
-                <Form.Group className="position-relative">
-                  <Form.Label className="form-label fw-semibold text-muted">
-                    <i className="fas fa-envelope me-2"></i>Email
-                  </Form.Label>
-                  <div className="input-group">
-                    <span className="input-group-text bg-white">
-                      <i className="fas fa-envelope text-success"></i>
-                    </span>
-                    <Form.Control
-                      type="email"
-                      name="email"
-                      placeholder="Введите email"
-                      className="form-control shadow-sm focus-ring"
-                      required
-                    />
-                  </div>
-                </Form.Group>
+            </Form.Group>
+
+            <Form.Group className="mb-4 position-relative">
+              <Form.Label className="form-label fw-semibold text-muted">
+                <i
+                  className={`fas ${
+                    contactType === "email" ? "fa-envelope" : "fa-phone"
+                  } me-2`}
+                ></i>
+                Контактные данные
+              </Form.Label>
+
+              <div className="mb-2">
+                <Form.Check
+                  type="radio"
+                  id="contact-email"
+                  name="contactType"
+                  label="Email"
+                  checked={contactType === "email"}
+                  onChange={() => setContactType("email")}
+                  inline
+                />
+                <Form.Check
+                  type="radio"
+                  id="contact-phone"
+                  name="contactType"
+                  label="Телефон"
+                  checked={contactType === "phone"}
+                  onChange={() => setContactType("phone")}
+                  inline
+                />
               </div>
-            </Row>
+
+              <div className="input-group">
+                <span className="input-group-text bg-white">
+                  <i
+                    className={`fas ${
+                      contactType === "email" ? "fa-envelope" : "fa-phone"
+                    } text-success`}
+                  ></i>
+                </span>
+                {contactType === "email" ? (
+                  <Form.Control
+                    type="email"
+                    name="email"
+                    placeholder="Введите email"
+                    className="form-control shadow-sm focus-ring"
+                    required
+                  />
+                ) : (
+                  <Form.Control
+                    type="tel"
+                    name="phone"
+                    placeholder="+7 (999) 123-45-67"
+                    className="form-control shadow-sm focus-ring"
+                    pattern="[+]?[0-9\s\-\(\)]+"
+                    required
+                  />
+                )}
+              </div>
+            </Form.Group>
 
             <Form.Group className="mb-4 position-relative">
               <Form.Label className="form-label fw-semibold text-muted">

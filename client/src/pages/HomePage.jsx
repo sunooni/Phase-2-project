@@ -22,7 +22,7 @@ export default function HomePage({ user }) {
       .then((res) => res.json())
       .then((data) => {
         setBooks(data);
-        
+
         const uniqueAuthors = [...new Set(data.map((book) => book.author))]
           .length;
         setStats({
@@ -53,14 +53,6 @@ export default function HomePage({ user }) {
     setBooks(books.filter((el) => el.id !== id));
   };
 
-  const handleAddBookClick = () => {
-    if (user) {
-      setShowForm(true);
-    } else {
-      navigate("/registration");
-    }
-  };
-
   return (
     <Container>
       {!user ? (
@@ -69,7 +61,6 @@ export default function HomePage({ user }) {
             Добро пожаловать в книжный уголок
           </h1>
 
-         
           <div style={{ margin: "3rem 0", textAlign: "center" }}>
             <Row className="justify-content-center">
               <Col md={4} className="mb-3">
@@ -184,33 +175,6 @@ export default function HomePage({ user }) {
             />
           </Col>
         ))}
-        <Col sm={3}>
-          <Card
-            className="mb-2"
-            style={{
-              width: "20rem",
-              cursor: "pointer",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              minHeight: "400px",
-              border: "2px dashed #ccc",
-            }}
-            onClick={handleAddBookClick}
-          >
-            <Card.Body
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                fontSize: "80px",
-                color: "#ccc",
-              }}
-            >
-              +
-            </Card.Body>
-          </Card>
-        </Col>
       </Row>
     </Container>
   );

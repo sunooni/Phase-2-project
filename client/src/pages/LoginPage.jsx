@@ -5,6 +5,7 @@ import { useState } from "react";
 
 function LoginPage({ loginHandler }) {
   const [isLoading, setIsLoading] = useState(false);
+  const [loginType, setLoginType] = useState("email"); 
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -32,19 +33,62 @@ function LoginPage({ loginHandler }) {
           <Form onSubmit={handleSubmit}>
             <Form.Group className="mb-4 position-relative">
               <Form.Label className="form-label fw-semibold text-muted">
-                <i className="fas fa-envelope me-2"></i>Email
+                <i
+                  className={`fas ${
+                    loginType === "email" ? "fa-envelope" : "fa-phone"
+                  } me-2`}
+                ></i>
+                Данные для входа
               </Form.Label>
+
+              {/* Переключатель типа входа */}
+              <div className="mb-2">
+                <Form.Check
+                  type="radio"
+                  id="login-email"
+                  name="loginType"
+                  label="Email"
+                  checked={loginType === "email"}
+                  onChange={() => setLoginType("email")}
+                  inline
+                />
+                <Form.Check
+                  type="radio"
+                  id="login-phone"
+                  name="loginType"
+                  label="Телефон"
+                  checked={loginType === "phone"}
+                  onChange={() => setLoginType("phone")}
+                  inline
+                />
+              </div>
+
               <div className="input-group input-group-lg">
                 <span className="input-group-text bg-white border-end-0">
-                  <i className="fas fa-envelope text-primary"></i>
+                  <i
+                    className={`fas ${
+                      loginType === "email" ? "fa-envelope" : "fa-phone"
+                    } text-primary`}
+                  ></i>
                 </span>
-                <Form.Control
-                  type="email"
-                  placeholder="Введите email"
-                  name="email"
-                  className="form-control-lg border-start-0 shadow-sm focus-ring"
-                  required
-                />
+                {loginType === "email" ? (
+                  <Form.Control
+                    type="email"
+                    placeholder="Введите email"
+                    name="email"
+                    className="form-control-lg border-start-0 shadow-sm focus-ring"
+                    required
+                  />
+                ) : (
+                  <Form.Control
+                    type="tel"
+                    placeholder="+7 (999) 123-45-67"
+                    name="phone"
+                    className="form-control-lg border-start-0 shadow-sm focus-ring"
+                    pattern="[+]?[0-9\s\-\(\)]+"
+                    required
+                  />
+                )}
               </div>
             </Form.Group>
 
