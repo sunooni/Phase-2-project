@@ -6,13 +6,25 @@ import RegisterPage from "../../pages/RegistrationPage";
 import LoginPage from "../../pages/LoginPage";
 import ProtectedRoute from "../../shared/ProtectedRoute";
 import AuthorPage from "../../pages/AuthorPage";
+import BookPage from "../../pages/BookPage";
 
-function Router({ registerHandler, loginHandler, logoutHandler, user, deleteHandler }) {
+function Router({
+  registerHandler,
+  loginHandler,
+  logoutHandler,
+  user,
+  deleteHandler,
+}) {
   return (
     <BrowserRouter>
       <Routes>
+      
+
         <Route element={<Layout logoutHandler={logoutHandler} user={user} />}>
+
+        
           <Route path="/" element={<HomePage user={user} />} />
+        <Route path="/books/:id" element={<BookPage />} />
           <Route
             path="/registration"
             element={
@@ -31,16 +43,18 @@ function Router({ registerHandler, loginHandler, logoutHandler, user, deleteHand
           />
         </Route>
         <Route
-          path="/books/my"
-          element={
-            <ProtectedRoute isAllowed={!!user} redirectTo="/books/my">
-              <AuthorPage user={user} deleteHandler={deleteHandler}/>
-            </ProtectedRoute>
-          }
-        />
+        path="/books/my"
+        element={
+          <ProtectedRoute isAllowed={!!user} redirectTo="/books/my">
+            <AuthorPage user={user} deleteHandler={deleteHandler} />
+          </ProtectedRoute>
+        }
+      />
       </Routes>
     </BrowserRouter>
   );
 }
 
 export default Router;
+
+
