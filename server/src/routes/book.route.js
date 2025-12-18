@@ -11,6 +11,6 @@ router.post('/', verifyRefreshToken, BookController.createBook);
 router.get('/:id', verifyAccessToken, validateId, BookController.getBookById);
 router.put('/:id', BookController.updateBook);
 router.delete('/:id', verifyAccessToken, validateId, BookController.deleteBook);
-
+// router.post('/:bookId/comments', verifyAccessToken, BookController.addComment);
 
 module.exports = router;

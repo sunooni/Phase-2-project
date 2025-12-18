@@ -6,6 +6,8 @@ class BookController {
     return res.json(book);
   }
 
+  
+
   static async getBookById(req, res) {
     const { id } = req.params;
     const book = await BookService.getBookById(id);
@@ -47,6 +49,9 @@ class BookController {
     await BookService.deleteBook(id);
     res.sendStatus(204);
   }
+// Добавьте этот метод в BookController
+
+
 
 }
 
