@@ -5,7 +5,7 @@ const verifyRefreshToken = require('../middlewares/verifyRefreshToken')
 const verifyAccessToken = require('../middlewares/verifyAccessToken')
 const validateId = require('../middlewares/validateUser')
 
-router.get('/myFavorites', verifyAccessToken, BookController.getBookByFavorites)
+
 router.get('/', BookController.getAllBooks);
 router.post('/', verifyRefreshToken, BookController.createBook);
 router.get('/:id', verifyAccessToken, validateId, BookController.getBookById);

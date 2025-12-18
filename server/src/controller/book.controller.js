@@ -48,11 +48,6 @@ class BookController {
     res.sendStatus(204);
   }
 
-  static async getBookByFavorites(req, res) {
-    const { user } = res.locals;
-    const book = await BookService.getBookByFaforites(user.id);
-    return res.json(book);
-  }
 }
 
 module.exports = BookController;
