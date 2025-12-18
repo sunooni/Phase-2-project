@@ -17,7 +17,7 @@ app.use(cookieParser());
 app.use('/api/auth', authRouter);
 app.use('/api/books', bookRouter);
 app.use('/api/favorites', favoriteRouter);
-app.use('/api/ia', iaRouter)
+app.use('/api/ai', iaRouter)
 app.use('/api/api/ai', iaRouter);
 
 // eslint-disable-next-line no-unused-vars
