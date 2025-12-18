@@ -1,5 +1,5 @@
 const { Book } = require('../../db/models');
-const { User } = require('../../db/models')
+
 
 class BookService {
   static async getAllBooks() {

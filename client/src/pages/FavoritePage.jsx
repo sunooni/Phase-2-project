@@ -12,12 +12,10 @@ export default function FavoritePage() {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const { data } = await axiosinstance.get("/favorites"); 
-        console.log("Загруженные избранные книги:", data);
+        const { data } = await axiosinstance.get("/favorites");
         setCards(data || []);
       } catch (error) {
         console.error("Ошибка загрузки избранного:", error);
-        console.error("Детали ошибки:", error.response?.data);
         setCards([]);
       } finally {
         setLoading(false);
@@ -27,13 +25,6 @@ export default function FavoritePage() {
   }, []);
 
   const removeFavorite = useCallback((favoriteId) => {
-    if (!favoriteId || favoriteId === 'undefined') {
-      console.error('Некорректный favoriteId:', favoriteId);
-      alert('Ошибка: не удалось определить ID избранного для удаления');
-      return;
-    }
-    
-    console.log('Удаление избранного с ID:', favoriteId);
     setRemovingIds((prev) => new Set(prev).add(favoriteId));
     axiosinstance
       .delete(`/favorites/${favoriteId}`)
@@ -76,29 +67,18 @@ export default function FavoritePage() {
 
   return (
     <Container className="py-4">
-      <h1 className="mb-4">Мои любивые книжки</h1>
+      <h1 className="mb-4">Мои любимые книжки</h1>
       <div className="row g-4">
         {cards.map((card, index) => {
-          console.log(`Рендеринг карточки #${index}:`, {
-            card,
-            favoriteId: card.favoriteId,
-            id: card.id,
-            title: card.title,
-            allKeys: Object.keys(card)
-          });
-          
-          // Проверяем наличие favoriteId
-          if (!card.favoriteId) {
-            console.error('ВНИМАНИЕ: favoriteId отсутствует в карточке:', card);
-          }
-          
           return (
-            <div key={card.favoriteId || `card-${card.id}-${index}`} className="col-md-6 col-lg-4 col-xl-3">
+            <div
+              key={card.favoriteId || `card-${card.id}-${index}`}
+              className="col-md-6 col-lg-4 col-xl-3"
+            >
               <BookCard
-                book={card}           
-                user={{}}            
+                book={card}
+                user={{}}
                 deleteHandler={(favoriteId) => {
-                  console.log('deleteHandler вызван с favoriteId:', favoriteId);
                   removeFavorite(favoriteId);
                 }}
                 isFavoritePage={true}
