@@ -19,12 +19,17 @@ axiosinstance.interceptors.request.use((config) => {
 
 axiosinstance.interceptors.response.use((res) => res, async (err) => {
   const prev = err.config;
-  if (err.status === 403 && !prev.sent) {
-    const response = await axios.get('/api/auth/refresh');
-    prev.sent = true;
-    setAccessToken(response.data.accessToken);
-    prev.headers.Authorization = `Bearer ${accessToken}`;
-    return axiosinstance(prev)
+  if (err.response?.status === 403 && !prev.sent) {
+    try {
+      const response = await axios.get('/api/auth/refresh');
+      prev.sent = true;
+      const newToken = response.data.accessToken;
+      setAccessToken(newToken);
+      prev.headers.Authorization = `Bearer ${newToken}`;
+      return axiosinstance(prev)
+    } catch (refreshError) {
+      return Promise.reject(refreshError)
+    }
   }
   return Promise.reject(err)
 })

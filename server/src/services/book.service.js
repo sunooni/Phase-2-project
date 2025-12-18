@@ -27,18 +27,6 @@ class BookService {
       return true;
   }
 
-  static async getBookByFaforites(userId) {
-      return Book.findAll({
-        where: { userId },
-        include: [
-          {
-            model: User,
-            attributes: ['id', 'name', 'email'],
-          },
-        ],
-      });
-    } 
-
 }
 
 module.exports = BookService;

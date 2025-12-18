@@ -5,7 +5,8 @@ import Layout from "../Layout";
 import RegisterPage from "../../pages/RegistrationPage";
 import LoginPage from "../../pages/LoginPage";
 import ProtectedRoute from "../../shared/ProtectedRoute";
-import AuthorPage from "../../pages/AuthorPage";
+import FavoritePage from "../../pages/FavoritePage";
+import BookDetailPage from "../../pages/BookDetailPage";
 
 function Router({ registerHandler, loginHandler, logoutHandler, user, deleteHandler }) {
   return (
@@ -13,31 +14,27 @@ function Router({ registerHandler, loginHandler, logoutHandler, user, deleteHand
       <Routes>
         <Route element={<Layout logoutHandler={logoutHandler} user={user} />}>
           <Route path="/" element={<HomePage user={user} />} />
-          <Route
-            path="/registration"
-            element={
-              <ProtectedRoute isAllowed={!user} redirectTo="/">
-                <RegisterPage registerHandler={registerHandler} />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/login"
-            element={
-              <ProtectedRoute isAllowed={!user} redirectTo="/">
-                <LoginPage loginHandler={loginHandler} />
-              </ProtectedRoute>
-            }
-          />
-        </Route>
-        <Route
-          path="/books/my"
-          element={
-            <ProtectedRoute isAllowed={!!user} redirectTo="/books/my">
-              <AuthorPage user={user} deleteHandler={deleteHandler}/>
+          <Route path="/books/:id" element={
+            <ProtectedRoute isAllowed={!!user} redirectTo="/login">
+              <BookDetailPage />
             </ProtectedRoute>
-          }
-        />
+          } />
+          <Route path="/favorites" element={
+            <ProtectedRoute isAllowed={!!user} redirectTo="/login">
+              <FavoritePage />
+            </ProtectedRoute>
+          } />
+        </Route>
+        <Route path="/registration" element={
+          <ProtectedRoute isAllowed={!user} redirectTo="/">
+            <RegisterPage registerHandler={registerHandler} />
+          </ProtectedRoute>
+        } />
+        <Route path="/login" element={
+          <ProtectedRoute isAllowed={!user} redirectTo="/">
+            <LoginPage loginHandler={loginHandler} />
+          </ProtectedRoute>
+        } />
       </Routes>
     </BrowserRouter>
   );

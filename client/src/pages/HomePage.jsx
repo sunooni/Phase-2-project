@@ -3,12 +3,11 @@ import { Button, Col, Container, Form, Row } from "react-bootstrap";
 import ContentCard from "../entities/ui/BookCard";
 import axios from "axios";
 import axiosinstance from "../shared/axiosinstance";
-import AuthorPage from "./AuthorPage";
 
 export default function HomePage({ user }) {
   const [books, setBooks] = useState([]);
   const [showForm, setShowForm] = useState(false);
-  
+
   useEffect(() => {
     fetch("/api/books")
       .then((res) => res.json())
@@ -28,11 +27,12 @@ export default function HomePage({ user }) {
     setBooks(books.filter((el) => el.id !== id));
   };
 
-  
   return (
     <Container>
       {!user ? (
-        <h1 style={{ textAlign: "center" }}>Добро пожаловать в книжный уголок</h1>
+        <h1 style={{ textAlign: "center" }}>
+          Добро пожаловать в книжный уголок
+        </h1>
       ) : (
         <div>
           <h2 style={{ textAlign: "center" }}>Личный кабинет {user.name}</h2>
