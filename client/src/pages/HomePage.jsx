@@ -1,9 +1,7 @@
 import { useEffect, useState } from "react";
-import { Button, Col, Container, Form, Row, Card } from "react-bootstrap";
 import ContentCard from "../entities/ui/BookCard";
-import axios from "axios";
 import axiosinstance from "../shared/axiosinstance";
-import { useNavigate } from "react-router";
+import "../styles/forms.css";
 
 export default function HomePage({ user }) {
   const [books, setBooks] = useState([]);
@@ -23,12 +21,15 @@ export default function HomePage({ user }) {
     totalAuthors: 0,
     totalRatings: 0,
   });
-  const navigate = useNavigate();
 
   useEffect(() => {
     fetchBooks();
     fetchGenres();
   }, []);
+
+  useEffect(() => {
+    fetchBooks();
+  }, [filters.genre, filters.author, filters.sortByRating]);
 
   const fetchGenres = async () => {
     try {
@@ -40,17 +41,12 @@ export default function HomePage({ user }) {
     }
   };
 
-  useEffect(() => {
-    fetchBooks();
-  }, [filters]);
-
   const fetchBooks = async () => {
     try {
       const params = new URLSearchParams();
       if (filters.genre) params.append("genre", filters.genre);
       if (filters.author) params.append("author", filters.author);
-      if (filters.sortByRating)
-        params.append("sortByRating", filters.sortByRating);
+      if (filters.sortByRating) params.append("sortByRating", filters.sortByRating);
 
       const response = await fetch(`/api/books?${params}`);
       const data = await response.json();
@@ -58,21 +54,12 @@ export default function HomePage({ user }) {
       setBooks(data);
       setFilteredBooks(data);
 
-      // Обновляем статистику только при первой загрузке (без фильтров)
-      if (
-        !filters.genre &&
-        !filters.author &&
-        !filters.sortByRating
-      ) {
-        const uniqueAuthors = [...new Set(data.map((book) => book.author))]
-          .length;
+      if (!filters.genre && !filters.author && !filters.sortByRating) {
+        const uniqueAuthors = [...new Set(data.map((book) => book.author))].length;
         setStats({
           totalBooks: data.length,
           totalAuthors: uniqueAuthors,
-          totalRatings: data.reduce(
-            (acc, book) => acc + (book.ratings?.length || 0),
-            0
-          ),
+          totalRatings: data.reduce((acc, book) => acc + (book.ratings?.length || 0), 0),
         });
       }
     } catch (error) {
@@ -97,81 +84,82 @@ export default function HomePage({ user }) {
 
   const submitHandler = async (e) => {
     e.preventDefault();
-    const formData = new FormData(e.target);
-    formData.append('userId', user.id);
-    // const data = Object.fromEntries(formData);
+    try {
+      const formData = new FormData(e.target);
+      formData.append("userId", user.id);
 
-    // Если выбрана ссылка на изображение, добавляем её в данные
-    if (imageType === "url" && data.imageUrl) {
-      data.image = data.imageUrl;
-      delete data.imageUrl;
-    }
+      if (imageType === "url" && formData.get("imageUrl")) {
+        formData.set("image", formData.get("imageUrl"));
+        formData.delete("imageUrl");
+      }
+      if (textType === "url" && formData.get("textUrl")) {
+        formData.set("bookText", formData.get("textUrl"));
+        formData.delete("textUrl");
+      }
 
-    // Если выбрана ссылка на текст книги, добавляем её в данные
-    if (textType === "url" && data.textUrl) {
-      data.bookText = data.textUrl;
-      delete data.textUrl;
-    }
+      const response = await axiosinstance.post("/books", formData);
+      const newBook = response.data;
+      
+      setShowForm(false);
+      setImageType("file");
+      setTextType("file");
+      
+      setBooks(prev => [newBook, ...prev]);
+      setFilteredBooks(prev => [newBook, ...prev]);
+      
+      setStats(prev => ({
+        totalBooks: prev.totalBooks + 1,
+        totalAuthors: prev.totalAuthors,
+        totalRatings: prev.totalRatings
+      }));
 
-    const response = await axios.post("/api/books", data);
-    setBooks([...books, response.data]);
-    setShowForm(false);
-    setImageType("file");
-    setTextType("file");
-
-    // Обновляем список жанров, если добавлен новый жанр
-    if (data.genre && !genres.includes(data.genre)) {
-      fetchGenres();
+    } catch (error) {
+      console.error('Ошибка создания книги:', error.response?.data || error.message);
+      alert('Ошибка при создании книги: ' + (error.response?.data || error.message));
     }
   };
 
   const deleteHandler = async (id) => {
-    await axiosinstance.delete(`books/${id}`);
-    setBooks(books.filter((el) => el.id !== id));
+    try {
+      await axiosinstance.delete(`/books/${id}`);
+      setBooks(books.filter((el) => el.id !== id));
+      setFilteredBooks(filteredBooks.filter((el) => el.id !== id));
+    } catch (error) {
+      console.error('Ошибка удаления:', error);
+    }
   };
 
   return (
-    <Container>
+    <div className="container fade-in">
       {!user ? (
         <>
-          <h1 style={{ textAlign: "center" }}>
-            Добро пожаловать в книжный уголок
+          <h1 className="text-center mb-4">
+            📚 Добро пожаловать в книжный уголок
           </h1>
 
-          <div style={{ margin: "3rem 0", textAlign: "center" }}>
-            <Row className="justify-content-center">
-              <Col md={4} className="mb-3">
-                <div>
-                  <h2 style={{ fontSize: "3rem", margin: "0", color: "#333" }}>
-                    {stats.totalBooks}
-                  </h2>
-                  <p style={{ margin: "0", color: "#666" }}>книг</p>
-                </div>
-              </Col>
-              <Col md={4} className="mb-3">
-                <div>
-                  <h2 style={{ fontSize: "3rem", margin: "0", color: "#333" }}>
-                    {stats.totalAuthors}
-                  </h2>
-                  <p style={{ margin: "0", color: "#666" }}>авторов</p>
-                </div>
-              </Col>
-              <Col md={4} className="mb-3">
-                <div>
-                  <h2 style={{ fontSize: "3rem", margin: "0", color: "#333" }}>
-                    {stats.totalRatings}
-                  </h2>
-                  <p style={{ margin: "0", color: "#666" }}>оценок</p>
-                </div>
-              </Col>
-            </Row>
+          <div className="stats-section">
+            <div className="row justify-center">
+              <div className="col-md-4 stat-card">
+                <h2 className="stat-number">{stats.totalBooks}</h2>
+                <p className="stat-label">книг</p>
+              </div>
+              <div className="col-md-4 stat-card">
+                <h2 className="stat-number">{stats.totalAuthors}</h2>
+                <p className="stat-label">авторов</p>
+              </div>
+              <div className="col-md-4 stat-card">
+                <h2 className="stat-number">{stats.totalRatings}</h2>
+                <p className="stat-label">оценок</p>
+              </div>
+            </div>
           </div>
         </>
       ) : (
         <div>
-          <h2 style={{ textAlign: "center" }}>Личный кабинет {user.name}</h2>
+          <h2 className="text-center mb-4">Личный кабинет {user.name}</h2>
 
-          <Button
+          <button
+            className="btn btn-primary mb-4"
             onClick={() => {
               setShowForm(!showForm);
               if (!showForm) {
@@ -180,216 +168,191 @@ export default function HomePage({ user }) {
               }
             }}
           >
-            +Добавить книгу
-          </Button>
+            {showForm ? "✕ Отмена" : "+ Добавить книгу"}
+          </button>
+          
           {showForm && (
-            <Form onSubmit={submitHandler}>
-              <Form.Group className="mb-3">
-                <Form.Label>Название книги</Form.Label>
-                <Form.Control type="text" name="title" required />
-              </Form.Group>
+            <form className="book-form" onSubmit={submitHandler}>
+              <div className="form-group">
+                <label className="form-label">Название книги</label>
+                <input className="form-control" type="text" name="title" required />
+              </div>
 
-              <Form.Group className="mb-3">
-                <Form.Label>Автор книги</Form.Label>
-                <Form.Control type="text" name="author" required />
-              </Form.Group>
+              <div className="form-group">
+                <label className="form-label">Автор книги</label>
+                <input className="form-control" type="text" name="author" required />
+              </div>
 
-              <Form.Group className="mb-3">
-                <Form.Label>Жанр</Form.Label>
-                <Form.Control
+              <div className="form-group">
+                <label className="form-label">Жанр</label>
+                <input
+                  className="form-control"
                   type="text"
                   name="genre"
                   placeholder="Введите жанр книги (например: Фантастика, Детектив, Роман...)"
                 />
-                <Form.Text className="text-muted">
-                  Популярные жанры: Фантастика, Фэнтези, Детектив, Классическая
-                  литература, Философская проза, Антиутопия
-                </Form.Text>
-              </Form.Group>
+                <small className="form-text">
+                  Популярные жанры: Фантастика, Фэнтези, Детектив, Классическая литература, Философская проза, Антиутопия
+                </small>
+              </div>
 
-              <Form.Group className="mb-3">
-                <Form.Label>Краткое описание книги</Form.Label>
-                <Form.Control type="text" name="descriptions" />
-              </Form.Group>
+              <div className="form-group">
+                <label className="form-label">Краткое описание книги</label>
+                <input className="form-control" type="text" name="descriptions" />
+              </div>
 
-              <Form.Group className="mb-3">
-                <Form.Label>Личные комментарии</Form.Label>
-                <Form.Control type="text" name="comment" />
-              </Form.Group>
+              <div className="form-group">
+                <label className="form-label">Личные комментарии</label>
+                <input className="form-control" type="text" name="comment" />
+              </div>
 
-              <Form.Group className="mb-3">
-                <Form.Label>Фото обложки</Form.Label>
-                <div className="mb-2">
-                  <Form.Check
-                    type="radio"
-                    id="image-file"
-                    name="imageType"
-                    label="Загрузить файл"
-                    checked={imageType === "file"}
-                    onChange={() => setImageType("file")}
-                    inline
-                  />
-                  <Form.Check
-                    type="radio"
-                    id="image-url"
-                    name="imageType"
-                    label="Ссылка на изображение"
-                    checked={imageType === "url"}
-                    onChange={() => setImageType("url")}
-                    inline
-                  />
+              <div className="form-group">
+                <label className="form-label">Фото обложки</label>
+                <div className="radio-group mb-2">
+                  <label className="radio-label">
+                    <input
+                      type="radio"
+                      name="imageType"
+                      checked={imageType === "file"}
+                      onChange={() => setImageType("file")}
+                    />
+                    Загрузить файл
+                  </label>
+                  <label className="radio-label">
+                    <input
+                      type="radio"
+                      name="imageType"
+                      checked={imageType === "url"}
+                      onChange={() => setImageType("url")}
+                    />
+                    Ссылка на изображение
+                  </label>
                 </div>
                 {imageType === "file" ? (
-                  <Form.Control type="file" name="cover" accept="image/*" />
+                  <input className="form-control" type="file" name="cover" accept="image/*" />
                 ) : (
-                  <Form.Control
+                  <input
+                    className="form-control"
                     type="url"
                     name="imageUrl"
                     placeholder="https://example.com/image.jpg"
                   />
                 )}
-              </Form.Group>
-              <Button type="submit">Создать</Button>
-            </Form>
+              </div>
+              <button type="submit" className="btn btn-primary">Создать</button>
+            </form>
           )}
         </div>
       )}
 
-            {/* Кнопка фильтров */}
-      <div className="mb-4">
-        <div className="d-flex justify-content-between align-items-center mb-3">
-          <Button
-            variant="outline-primary"
+      {/* Фильтры */}
+      <div className="filters-section mb-4">
+        <div className="filters-header">
+          <button
+            className="btn btn-outline"
             onClick={() => setShowFilters(!showFilters)}
-            className="d-flex align-items-center"
           >
-            <i className={`fas fa-filter me-2`}></i>
-            Отфильтровать по
-            <i
-              className={`fas fa-chevron-${showFilters ? "up" : "down"} ms-2`}
-            ></i>
-          </Button>
+            🔍 {showFilters ? "Скрыть" : "Показать"} фильтры
+            <span className="chevron">{showFilters ? "▲" : "▼"}</span>
+          </button>
 
-          {/* Показываем активные фильтры */}
-          {(filters.genre ||
-            filters.author ||
-            filters.sortByRating) && (
-            <div className="d-flex align-items-center">
-              <small className="text-muted me-2">Активные фильтры:</small>
+          {(filters.genre || filters.author || filters.sortByRating) && (
+            <div className="active-filters">
+              <small>Активные фильтры:</small>
               {filters.genre && (
-                <span className="badge bg-primary me-1">
-                  Жанр: {filters.genre}
-                </span>
+                <span className="badge badge-secondary">Жанр: {filters.genre}</span>
               )}
               {filters.author && (
-                <span className="badge bg-success me-1">
-                  Автор: {filters.author}
-                </span>
+                <span className="badge badge-secondary">Автор: {filters.author}</span>
               )}
               {filters.sortByRating && (
-                <span className="badge bg-info me-1">
-                  Сортировка:{" "}
-                  {filters.sortByRating === "desc"
-                    ? "Высокий рейтинг"
-                    : "Низкий рейтинг"}
+                <span className="badge badge-secondary">
+                  Сортировка: {filters.sortByRating === "desc" ? "Высокий рейтинг" : "Низкий рейтинг"}
                 </span>
               )}
-              <Button
-                variant="outline-secondary"
-                size="sm"
-                onClick={clearFilters}
-                className="ms-2"
-              >
+              <button className="btn btn-secondary btn-sm" onClick={clearFilters}>
                 Очистить
-              </Button>
+              </button>
             </div>
           )}
         </div>
 
-        {/* Скрываемые фильтры */}
         {showFilters && (
-          <div className="border rounded p-3 bg-light">
-            <Row>
-              <Col md={3}>
-                <Form.Group className="mb-3">
-                  <Form.Label>Жанр</Form.Label>
-                  <Form.Select
+          <div className="filters-panel">
+            <div className="row">
+              <div className="col-md-3">
+                <div className="form-group">
+                  <label className="form-label">Жанр</label>
+                  <select
+                    className="form-select"
                     value={filters.genre}
-                    onChange={(e) =>
-                      handleFilterChange("genre", e.target.value)
-                    }
+                    onChange={(e) => handleFilterChange("genre", e.target.value)}
                   >
                     <option value="">Все жанры</option>
                     {genres.map((genre) => (
-                      <option key={genre} value={genre}>
-                        {genre}
-                      </option>
+                      <option key={genre} value={genre}>{genre}</option>
                     ))}
-                  </Form.Select>
-                </Form.Group>
-              </Col>
-              <Col md={3}>
-                <Form.Group className="mb-3">
-                  <Form.Label>Автор</Form.Label>
-                  <Form.Control
+                  </select>
+                </div>
+              </div>
+              <div className="col-md-3">
+                <div className="form-group">
+                  <label className="form-label">Автор</label>
+                  <input
+                    className="form-control"
                     type="text"
                     placeholder="Поиск по автору"
                     value={filters.author}
-                    onChange={(e) =>
-                      handleFilterChange("author", e.target.value)
-                    }
+                    onChange={(e) => handleFilterChange("author", e.target.value)}
                   />
-                </Form.Group>
-              </Col>
-              <Col md={3}>
-                <Form.Group className="mb-3">
-                  <Form.Label>Сортировка по рейтингу</Form.Label>
-                  <Form.Select
+                </div>
+              </div>
+              <div className="col-md-3">
+                <div className="form-group">
+                  <label className="form-label">Сортировка по рейтингу</label>
+                  <select
+                    className="form-select"
                     value={filters.sortByRating}
-                    onChange={(e) =>
-                      handleFilterChange("sortByRating", e.target.value)
-                    }
+                    onChange={(e) => handleFilterChange("sortByRating", e.target.value)}
                   >
                     <option value="">По умолчанию</option>
                     <option value="desc">Сначала высокий рейтинг</option>
                     <option value="asc">Сначала низкий рейтинг</option>
-                  </Form.Select>
-                </Form.Group>
-              </Col>
-            </Row>
+                  </select>
+                </div>
+              </div>
+            </div>
 
-            <div className="d-flex justify-content-end">
-              <Button
-                variant="outline-secondary"
-                onClick={clearFilters}
-                className="me-2"
-              >
+            <div className="filters-actions">
+              <button className="btn btn-secondary" onClick={clearFilters}>
                 Очистить все фильтры
-              </Button>
-              <Button variant="primary" onClick={() => setShowFilters(false)}>
+              </button>
+              <button className="btn btn-primary" onClick={() => setShowFilters(false)}>
                 Применить фильтры
-              </Button>
+              </button>
             </div>
           </div>
         )}
       </div>
 
-      <Row>
-        {filteredBooks.map((book) => (
-          <Col sm={3} key={book.id}>
-            <ContentCard
-              book={book}
-              user={user}
-              deleteHandler={deleteHandler}
-            />
-          </Col>
+      <div className="row">
+        {filteredBooks.map((book, index) => (
+          <div 
+            key={book.id} 
+            className="col-md-6 col-lg-4 col-xl-3"
+            style={{ '--card-index': index }}
+          >
+            <ContentCard book={book} user={user} deleteHandler={deleteHandler} />
+          </div>
         ))}
         {filteredBooks.length === 0 && (
-          <Col>
-            <p className="text-center text-muted">Книги не найдены</p>
-          </Col>
+          <div className="col">
+            <p className="text-center" style={{ color: '#777', padding: '2rem' }}>
+              Книги не найдены
+            </p>
+          </div>
         )}
-      </Row>
-    </Container>
+      </div>
+    </div>
   );
 }

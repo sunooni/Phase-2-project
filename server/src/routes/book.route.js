@@ -6,6 +6,7 @@ const path = require('path');
 const fs = require('fs');      
 const verifyAccessToken = require('../middlewares/verifyAccessToken');
 const validateId = require('../middlewares/validateUser');
+const verifyRefreshToken = require('../middlewares/verifyRefreshToken')
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -27,7 +28,7 @@ const upload = multer({ storage });
 router.get('/', BookController.getAllBooks);
 router.post('/', verifyAccessToken, upload.single('cover'), BookController.createBook);
 router.get('/genres', BookController.getGenres);
-router.post('/', verifyRefreshToken, BookController.createBook);
+// router.post('/', verifyRefreshToken, BookController.createBook);
 router.get('/:id', verifyAccessToken, validateId, BookController.getBookById);
 router.put('/:id', BookController.updateBook);
 router.delete('/:id', verifyAccessToken, validateId, BookController.deleteBook);
