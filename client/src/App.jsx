@@ -2,11 +2,10 @@ import { useEffect, useState } from "react";
 import Router from "./app/Router/Router";
 import axios from "axios";
 import "./shared/axiosinstance";
-import axiosinstance, { setAccessToken } from "./shared/axiosinstance";
+import { setAccessToken } from "./shared/axiosinstance";
 
 function App() {
   const [user, setUser] = useState(null);
-  // const [contents, setContents] = useState([]);
 
   const registerHandler = async (e) => {
     e.preventDefault();
@@ -32,11 +31,6 @@ function App() {
       setUser(null);
     });
   };
-
-  // const deleteHandler = async (id) => {
-  //   await axiosinstance.delete(`contents/${id}`);
-  //   setContents(contents.filter((el) => el.id !== id));
-  // };
 
   useEffect(() => {
     axios

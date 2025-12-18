@@ -1,8 +1,21 @@
 import React from "react";
 import { Button } from "react-bootstrap";
 import Card from "react-bootstrap/Card";
+import { useNavigate } from "react-router";
+import axiosinstance from "../../shared/axiosinstance";
 
-function ContentCard({ book, user, deleteHandler}) {
+function BookCard({ book, user, deleteHandler, isFavoritePage = false }) {
+  const navigate = useNavigate();
+
+  const addToFavorites = async () => {
+    await axiosinstance.post("/favorites", { bookId: book.id });
+    navigate("/favorites");
+  };
+
+  const handleDetails = () => {
+    navigate(`/books/${book.id}`);
+  };
+
   return (
     <>
       <Card className="mb-2" style={{ width: "20rem" }}>
@@ -10,16 +23,28 @@ function ContentCard({ book, user, deleteHandler}) {
         <Card.Body>
           <Card.Title>{book.title}</Card.Title>
           <Card.Title>{book.author}</Card.Title>
-          
-         <Button>Подробнее</Button>
-          <Button variant="info" >В избранное</Button>
-          {user?.id === book.userId && (
+
+          <Button onClick={handleDetails}>Подробнее</Button>
+          {!isFavoritePage && (
+            <Button variant="info" onClick={addToFavorites}>
+              ⭐ В избранное
+            </Button>
+          )}
+          {isFavoritePage && deleteHandler && (
+            <Button
+              variant="danger"
+              onClick={() => {
+                deleteHandler(book.favoriteId);
+              }}
+            >
+              Удалить из избранного
+            </Button>
+          )}
+          {user?.id === book.userId && !isFavoritePage && (
             <>
-            
               <Button variant="danger" onClick={() => deleteHandler(book.id)}>
                 Удалить
               </Button>
-              <Button variant="warning" >Изменить</Button>
             </>
           )}
         </Card.Body>
@@ -28,4 +53,4 @@ function ContentCard({ book, user, deleteHandler}) {
   );
 }
 
-export default ContentCard;
+export default BookCard;

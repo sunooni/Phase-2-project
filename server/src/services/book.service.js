@@ -1,5 +1,5 @@
 const { Book } = require('../../db/models');
-const { User } = require('../../db/models')
+
 
 class BookService {
   static async getAllBooks() {
@@ -26,18 +26,6 @@ class BookService {
       await Book.destroy({ where: { id } });
       return true;
   }
-
-  static async getBookByFaforites(userId) {
-      return Book.findAll({
-        where: { userId },
-        include: [
-          {
-            model: User,
-            attributes: ['id', 'name', 'email'],
-          },
-        ],
-      });
-    } 
 
 }
 
