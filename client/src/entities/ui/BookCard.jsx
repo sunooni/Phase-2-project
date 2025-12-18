@@ -30,6 +30,7 @@ function BookCard({ book, user, deleteHandler, isFavoritePage = false }) {
               ⭐ В избранное
             </Button>
           )}
+          
           {isFavoritePage && deleteHandler && (
             <Button
               variant="danger"
