@@ -1,19 +1,19 @@
 import React from "react";
-import { useNavigate } from "react-router";
+import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import axiosinstance from "../../shared/axiosinstance";
 
 function BookCard({ book, user, deleteHandler, isFavoritePage = false }) {
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const addToFavorites = async () => {
     try {
       await axiosinstance.post("/favorites", { bookId: book.id });
       navigate("/favorites");
     } catch (error) {
-      console.error("Ошибка при добавлении в избранное:", error);
-      alert(
-        error.response?.data?.message || "Не удалось добавить книгу в избранное"
-      );
+      console.error(t("errors.favAddFailed"), error);
+      alert(error.response?.data?.message || t("errors.favAddFailed"));
     }
   };
 
@@ -33,7 +33,9 @@ function BookCard({ book, user, deleteHandler, isFavoritePage = false }) {
           e.target.src =
             "data:image/svg+xml;utf8," +
             encodeURIComponent(
-              '<svg xmlns="http://www.w3.org/2000/svg" width="300" height="400"><rect width="100%" height="100%" fill="#f2f2f2"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-family="Georgia, serif" font-size="20" fill="#888">Обложка</text></svg>'
+              `<svg xmlns="http://www.w3.org/2000/svg" width="300" height="400"><rect width="100%" height="100%" fill="#f2f2f2"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-family="Georgia, serif" font-size="20" fill="#888">${t(
+                "card.cover"
+              )}</text></svg>`
             );
         }}
       />
@@ -82,7 +84,7 @@ function BookCard({ book, user, deleteHandler, isFavoritePage = false }) {
             <div className="rating-row mb-3">
               <span
                 className="rating-stars d-inline-flex align-items-center"
-                title={`Рейтинг: ${r.toFixed(1)}`}
+                title={t("card.rating", { rating: r.toFixed(1) })}
               >
                 {stars.map((s, idx) => {
                   if (s === "full")
@@ -121,11 +123,11 @@ function BookCard({ book, user, deleteHandler, isFavoritePage = false }) {
         })()}
         <div className="book-card-actions">
           <button className="btn btn-primary" onClick={handleDetails}>
-            Подробнее
+            {t("card.details")}
           </button>
           {user && !isFavoritePage && (
             <button className="btn btn-info" onClick={addToFavorites}>
-              ⭐ В избранное
+              {t("card.addFavorite")}
             </button>
           )}
           {isFavoritePage && deleteHandler && (
@@ -137,7 +139,7 @@ function BookCard({ book, user, deleteHandler, isFavoritePage = false }) {
                 }
               }}
             >
-              Удалить из избранного
+              {t("card.deleteFavorite")}
             </button>
           )}
           {user?.id === book.userId && !isFavoritePage && (
@@ -145,7 +147,7 @@ function BookCard({ book, user, deleteHandler, isFavoritePage = false }) {
               className="btn btn-danger"
               onClick={() => deleteHandler(book.id)}
             >
-              Удалить
+              {t("card.delete")}
             </button>
           )}
         </div>

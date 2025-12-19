@@ -1,7 +1,9 @@
 import { Button, Container, Form } from "react-bootstrap";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 
 export default function RegisterPage({ registerHandler }) {
+  const { t } = useTranslation();
   const [isLoading, setIsLoading] = useState(false);
   const [contactType, setContactType] = useState("email");
   const handleSubmit = async (e) => {
@@ -24,14 +26,15 @@ export default function RegisterPage({ registerHandler }) {
           <div className="user-icon mb-3">
             <i className="fas fa-user-plus fa-2x"></i>
           </div>
-          <h2 className="mb-0 fw-bold">Присоединяйтесь к нам!</h2>
-          <p className="mb-0 opacity-75 mt-2">Создайте аккаунт</p>
+          <h2 className="mb-0 fw-bold">{t("registration.submit")}</h2>
+          <p className="mb-0 opacity-75 mt-2">{t("registration.submit")}</p>
         </div>
         <div className="card-body">
           <Form onSubmit={handleSubmit}>
             <Form.Group className="mb-4 position-relative">
               <Form.Label className="form-label fw-semibold text-muted">
-                <i className="fas fa-user me-2"></i>Имя
+                <i className="fas fa-user me-2"></i>
+                {t("registration.namePlaceholder")}
               </Form.Label>
               <div className="input-group">
                 <span className="input-group-text bg-white"></span>
@@ -82,7 +85,7 @@ export default function RegisterPage({ registerHandler }) {
                   <Form.Control
                     type="email"
                     name="email"
-                    placeholder="Введите email"
+                    placeholder={t("registration.emailPlaceholder")}
                     className="form-control shadow-sm focus-ring"
                     required
                   />
@@ -101,14 +104,15 @@ export default function RegisterPage({ registerHandler }) {
 
             <Form.Group className="mb-4 position-relative">
               <Form.Label className="form-label fw-semibold text-muted">
-                <i className="fas fa-lock me-2"></i>Пароль
+                <i className="fas fa-lock me-2"></i>
+                {t("registration.passwordPlaceholder")}
               </Form.Label>
               <div className="input-group">
                 <span className="input-group-text bg-white"></span>
                 <Form.Control
                   type="password"
                   name="password"
-                  placeholder="Создайте пароль"
+                  placeholder={t("registration.passwordPlaceholder")}
                   className="form-control shadow-sm focus-ring"
                   required
                 />
@@ -126,22 +130,22 @@ export default function RegisterPage({ registerHandler }) {
                     className="spinner-border spinner-border-sm me-2"
                     role="status"
                   ></span>
-                  Регистрация...
+                  {t("registration.submit")}...
                 </>
               ) : (
-                "Зарегистрироваться"
+                t("registration.submit")
               )}
             </Button>
           </Form>
         </div>
         <div className="card-footer bg-light text-center">
           <small className="text-muted">
-            Уже есть аккаунт?{" "}
+            {t("login.noAccount")}{" "}
             <a
               href="/login"
               className="text-success fw-semibold text-decoration-none"
             >
-              Войти
+              {t("login.login")}
             </a>
           </small>
         </div>

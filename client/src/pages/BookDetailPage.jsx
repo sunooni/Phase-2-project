@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router";
+import { useParams, useNavigate } from "react-router-dom";
 import axiosinstance from "../shared/axiosinstance";
 import "../styles/modal.css";
+import { useTranslation } from "react-i18next";
 
 export default function BookDetailPage({ user }) {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { t, i18n } = useTranslation();
   const [book, setBook] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -78,7 +80,7 @@ export default function BookDetailPage({ user }) {
   if (loading) {
     return (
       <div className="container py-4">
-        <div className="loading">Загрузка</div>
+        <div className="loading">{t("common.loading")}</div>
       </div>
     );
   }
@@ -86,9 +88,9 @@ export default function BookDetailPage({ user }) {
   if (error || !book) {
     return (
       <div className="container py-4 text-center">
-        <h2>{error || "Книга не найдена"}</h2>
-        <button className="btn btn-primary mt-3" onClick={() => navigate("/")}>
-          Вернуться на главную
+        <h2>{error || t("bookDetail.notFound")}</h2>
+        <button className="btn btn-primary mt-3" onClick={() => navigate("/") }>
+          {t("common.returnHome")}
         </button>
       </div>
     );
@@ -109,7 +111,10 @@ export default function BookDetailPage({ user }) {
       setHasRated(true);
       setUserRating(rating); // Устанавливаем оценку сразу
 
-      alert(`Спасибо за оценку! Вы поставили ${rating} звезд.`);
+      alert(
+        t("bookDetail.commentAdded") ||
+          `Спасибо за оценку! Вы поставили ${rating} звезд.`
+      );
     } catch (error) {
       console.error("Ошибка при отправке оценки:", error);
       alert(
@@ -177,12 +182,10 @@ export default function BookDetailPage({ user }) {
 
       setComments([response.data, ...comments]);
       setNewComment("");
-      alert("Комментарий добавлен!");
+      alert(t("bookDetail.commentAdded"));
     } catch (error) {
       console.error("Ошибка при добавлении комментария:", error);
-      alert(
-        "Не удалось добавить комментарий. Попробуйте еще раз. Возможно, требуется авторизация."
-      );
+      alert(t("bookDetail.commentAddError"));
     } finally {
       setSubmittingComment(false);
     }
@@ -214,24 +217,23 @@ export default function BookDetailPage({ user }) {
       );
       setEditingComment(null);
       setEditText("");
-      alert("Комментарий обновлен!");
+      alert(t("bookDetail.commentUpdated"));
     } catch (error) {
       console.error("Ошибка при обновлении комментария:", error);
-      alert("Не удалось обновить комментарий.");
+      alert(t("bookDetail.commentUpdateError"));
     }
   };
 
   const deleteComment = async (commentId) => {
-    if (!user) return; // Проверка авторизации
-    if (!confirm("Вы уверены, что хотите удалить комментарий?")) return;
+    if (!confirm(t("bookDetail.confirmDeleteComment"))) return;
 
     try {
       await axiosinstance.delete(`/books/comments/${commentId}`);
       setComments(comments.filter((comment) => comment.id !== commentId));
-      alert("Комментарий удален!");
+      alert(t("bookDetail.commentDeleted"));
     } catch (error) {
       console.error("Ошибка при удалении комментария:", error);
-      alert("Не удалось удалить комментарий.");
+      alert(t("bookDetail.commentDeleteError"));
     }
   };
 
@@ -246,7 +248,7 @@ export default function BookDetailPage({ user }) {
   return (
     <div className="container py-4 fade-in">
       <button className="btn btn-secondary mb-3" onClick={() => navigate(-1)}>
-        ← Назад
+        {t("common.back")}
       </button>
 
       <div className="book-detail-layout">
@@ -254,13 +256,15 @@ export default function BookDetailPage({ user }) {
           <div className="book-detail-image">
             <img
               src={book.image}
-              alt={`Обложка книги ${book.title}`}
+              alt={`${t("card.cover")} ${book.title}`}
               onError={(e) => {
                 e.target.onerror = null;
                 e.target.src =
                   "data:image/svg+xml;utf8," +
                   encodeURIComponent(
-                    '<svg xmlns="http://www.w3.org/2000/svg" width="400" height="600"><rect width="100%" height="100%" fill="#f8f8f8"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-family="Georgia, serif" font-size="24" fill="#999">Обложка</text></svg>'
+                    `<svg xmlns="http://www.w3.org/2000/svg" width="400" height="600"><rect width="100%" height="100%" fill="#f8f8f8"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-family="Georgia, serif" font-size="24" fill="#999">${t(
+                      "card.cover"
+                    )}</text></svg>`
                   );
               }}
             />
@@ -279,7 +283,9 @@ export default function BookDetailPage({ user }) {
 
           {book.description && (
             <div className="mb-4">
-              <h4 style={{ color: "#333", marginBottom: "1rem" }}>Описание</h4>
+              <h4 style={{ color: "#333", marginBottom: "1rem" }}>
+                {t("common.description")}
+              </h4>
               <div
                 className="book-description"
                 style={{
@@ -297,32 +303,32 @@ export default function BookDetailPage({ user }) {
 
           <div className="mb-3">
             <h5 style={{ color: "#333", marginBottom: "0.5rem" }}>
-              Рейтинг книги
+              {t("common.rating")}
             </h5>
             <div className="rating-display">
               {renderStars(getCurrentRating(), false)}
               <span style={{ marginLeft: "10px", color: "#666" }}>
                 {getCurrentRating() > 0
                   ? `${getCurrentRating().toFixed(1)}/5`
-                  : "Нет оценок"}
+                  : t("bookDetail.noRatings")}
               </span>
             </div>
           </div>
 
           <div className="mb-4">
             <h5 style={{ color: "#333", marginBottom: "0.5rem" }}>
-              {user ? (hasRated ? "Ваша оценка" : "Оцените книгу") : "Оценка"}
+              {hasRated ? t("bookDetail.yourRating") : t("bookDetail.rateBook")}
             </h5>
             <div className="user-rating-display">
               {renderStars(hoverRating || userRating, true)}
               {submittingRating && (
                 <span style={{ marginLeft: "10px", color: "#666" }}>
-                  Отправка...
+                  {t("bookDetail.sending")}
                 </span>
               )}
               {user && hasRated && (
                 <span style={{ marginLeft: "10px", color: "#28a745" }}>
-                  ✓ Оценено ({userRating}/5)
+                  ✓ {t("bookDetail.rated", { rating: userRating })}
                 </span>
               )}
               {/* Сообщение для неавторизованных пользователей */}
@@ -345,7 +351,7 @@ export default function BookDetailPage({ user }) {
                     fontSize: "0.9rem",
                   }}
                 >
-                  Нажмите на звезду для оценки
+                  {t("bookDetail.rateBook")}
                 </span>
               )}
             </div>
@@ -353,53 +359,48 @@ export default function BookDetailPage({ user }) {
 
           <div className="book-detail-actions mb-4">
             <button className="btn btn-info me-2" onClick={handleReadBook}>
-              📖 Читать
+              📖 {t("common.read")}
             </button>
-            <button className="btn btn-info">⬇ Скачать</button>
+            <button className="btn btn-info">⬇ {t("common.download")}</button>
           </div>
         </div>
 
         <div className="book-detail-comments-column">
           <div className="mb-4">
             <h5 style={{ color: "#333", marginBottom: "1rem" }}>
-              Оставить комментарий
+              {t("common.leaveComment")}
             </h5>
-            {user ? ( // Условный рендеринг формы
-              <form onSubmit={submitComment} className="comment-form">
-                <div className="mb-3">
-                  <textarea
-                    className="form-control"
-                    rows="3"
-                    placeholder="Поделитесь своими впечатлениями о книге..."
-                    value={newComment}
-                    onChange={(e) => setNewComment(e.target.value)}
-                    disabled={submittingComment}
-                  />
-                </div>
-                <button
-                  type="submit"
-                  className="btn btn-primary"
-                  disabled={submittingComment || !newComment.trim()}
-                >
-                  {submittingComment ? "Отправка..." : "Отправить комментарий"}
-                </button>
-              </form>
-            ) : (
-              <p style={{ color: "#777", fontStyle: "italic" }}>
-                <a href="/login">Войдите</a>, чтобы иметь возможность оставлять
-                комментарии.
-              </p>
-            )}
+            <form onSubmit={submitComment} className="comment-form">
+              <div className="mb-3">
+                <textarea
+                  className="form-control"
+                  rows="3"
+                  placeholder={t("bookDetail.commentPlaceholder")}
+                  value={newComment}
+                  onChange={(e) => setNewComment(e.target.value)}
+                  disabled={submittingComment}
+                />
+              </div>
+              <button
+                type="submit"
+                className="btn btn-primary"
+                disabled={submittingComment || !newComment.trim()}
+              >
+                {submittingComment
+                  ? t("bookDetail.sending")
+                  : t("bookDetail.sendComment")}
+              </button>
+            </form>
           </div>
 
           <div className="comments-section">
             <h5 style={{ color: "#333", marginBottom: "1rem" }}>
-              Комментарии ({comments.length})
+              {t("common.comments")} ({comments.length})
             </h5>
 
             {comments.length === 0 ? (
               <p style={{ color: "#777", fontStyle: "italic" }}>
-                Пока нет комментариев. Будьте первым!
+                {t("common.noComments")}
               </p>
             ) : (
               <div className="comments-list">
@@ -410,18 +411,18 @@ export default function BookDetailPage({ user }) {
                         <strong style={{ color: "#333" }}>
                           {comment.user.name}
                         </strong>
-                        <small style={{ color: "#777", marginLeft: "10px" }}>
-                          {new Date(comment.createdAt).toLocaleDateString(
-                            "ru-RU",
-                            {
-                              year: "numeric",
-                              month: "long",
-                              day: "numeric",
-                              hour: "2-digit",
-                              minute: "2-digit",
-                            }
-                          )}
-                        </small>
+                                    <small style={{ color: "#777", marginLeft: "10px" }}>
+                                      {new Date(comment.createdAt).toLocaleDateString(
+                                        i18n.language === 'en' ? 'en-US' : 'ru-RU',
+                                        {
+                                          year: "numeric",
+                                          month: "long",
+                                          day: "numeric",
+                                          hour: "2-digit",
+                                          minute: "2-digit",
+                                        }
+                                      )}
+                                    </small>
                       </div>
 
                       {user && comment.userId === user.id && (
@@ -457,13 +458,13 @@ export default function BookDetailPage({ user }) {
                               onClick={() => updateComment(comment.id)}
                               disabled={!editText.trim()}
                             >
-                              Сохранить
+                              {t("common.save")}
                             </button>
                             <button
                               className="btn btn-sm btn-secondary"
                               onClick={cancelEditComment}
                             >
-                              Отмена
+                              {t("common.cancel")}
                             </button>
                           </div>
                         </div>
@@ -505,6 +506,7 @@ export default function BookDetailPage({ user }) {
             onClick={closeReadModal}
           />
 
+          {/* Модальное окно */}
           <div
             className="read-modal"
             style={{
@@ -531,7 +533,7 @@ export default function BookDetailPage({ user }) {
               }}
             >
               <h3 style={{ margin: 0, color: "#333" }}>
-                📖 Чтение: {book.title}
+                📖 {t("bookDetail.reading", { title: book.title })}
               </h3>
               <button
                 className="btn-close"
@@ -558,12 +560,8 @@ export default function BookDetailPage({ user }) {
               className="modal-body"
               style={{ padding: "2rem", maxHeight: "60vh", overflowY: "auto" }}
             >
-              <p
-                dangerouslySetInnerHTML={{
-                  __html:
-                    book.bookText ||
-                    "К сожалению, текст книги недоступен для онлайн-чтения.",
-                }}
+              <div
+                dangerouslySetInnerHTML={{ __html: book.description }}
                 style={{
                   whiteSpace: "pre-wrap",
                   lineHeight: "1.8",
@@ -579,11 +577,13 @@ export default function BookDetailPage({ user }) {
                 padding: "1rem 1.5rem",
                 borderTop: "1px solid #e9ecef",
                 backgroundColor: "#f8f9fa",
-                textAlign: "right",
               }}
             >
-              <button className="btn btn-secondary" onClick={closeReadModal}>
-                Закрыть
+              <button
+                className="btn btn-secondary me-2"
+                onClick={closeReadModal}
+              >
+                {t("common.close")}
               </button>
             </div>
           </div>

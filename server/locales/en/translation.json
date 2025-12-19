@@ -1,20 +1,30 @@
 {
-  "welcome": "Welcome to the book corner",
-  "personalCabinet": "Personal cabinet {{name}}", 
-  "addBook": "+Add book",
-  "bookTitle": "Book title",
-  "bookAuthor": "Book author",
-  "bookDescription": "Book description",
-  "bookComment": "Personal comments",
-  "bookCover": "Book cover",
+  "welcome": "📚 Welcome to the Book Corner",
+  "personalCabinet": "Welcome, {{name}}",
+  "addBook": "+ Add Book",
+  "bookTitle": "Title",
+  "bookAuthor": "Author",
+  "bookDescription": "Short description",
+  "bookComment": "Personal notes",
+  "bookCover": "Cover image",
   "fileUpload": "Upload file",
   "imageUrl": "Image URL",
   "create": "Create",
-  "books": "books",
-  "authors": "authors",
-  "ratings": "ratings",
+  "books": "Books",
+  "authors": "Authors",
+  "ratings": "Ratings",
   "details": "Details",
-  "addFavorite": "⭐ Add to favorites",
+  "addFavorite": "⭐ Add to Favorites",
   "delete": "Delete",
-  "deleteFavorite": "Remove from favorites"
+  "deleteFavorite": "Remove from Favorites",
+  "notFound": "No books found",
+  "filters": {
+    "show": "Show filters",
+    "hide": "Hide filters",
+    "clear": "Clear filters"
+  },
+  "form": {
+    "cancel": "Cancel",
+    "submit": "Submit"
+  }
 }

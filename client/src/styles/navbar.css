@@ -212,6 +212,38 @@
   color: var(--color-warm-beige);
 }
 
+/* Language switcher styles */
+.lang-switcher {
+  display: inline-flex;
+  gap: 0.4rem;
+  align-items: center;
+  margin-left: 0.75rem;
+}
+
+.lang-btn {
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 0.35rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 150ms ease;
+  font-family: "Georgia", serif;
+}
+
+.lang-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
+}
+
+.lang-btn.active {
+  background: #fff;
+  color: var(--color-brown);
+  font-weight: 700;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+}
+
 .navbar-toggle {
   display: none;
   background: none;

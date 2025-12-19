@@ -1,6 +1,6 @@
 import HomePage from "../../pages/HomePage";
 import React from "react";
-import { Routes, Route, BrowserRouter } from "react-router";
+import { Routes, Route, BrowserRouter } from "react-router-dom";
 import Layout from "../Layout";
 import RegisterPage from "../../pages/RegistrationPage";
 import LoginPage from "../../pages/LoginPageClean";

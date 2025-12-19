@@ -3,8 +3,10 @@ import Router from "./app/Router/Router";
 import axios from "axios";
 import "./shared/axiosinstance";
 import { setAccessToken } from "./shared/axiosinstance";
+import { useTranslation } from "react-i18next";
 
 function App() {
+  const { t } = useTranslation();
   const [user, setUser] = useState(null);
 
   const registerHandler = async (e) => {
@@ -25,7 +27,8 @@ function App() {
         error.response?.data || error.message
       );
       alert(
-        "Ошибка регистрации: " +
+        t("errors.registration") +
+          ": " +
           (error.response?.data?.message || error.message)
       );
     }

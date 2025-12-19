@@ -2,8 +2,10 @@ import { useEffect, useState } from "react";
 import ContentCard from "../entities/ui/BookCard";
 import axiosinstance from "../shared/axiosinstance";
 import "../styles/forms.css";
+import { useTranslation } from "react-i18next";
 
 export default function HomePage({ user }) {
+  const { t } = useTranslation();
   const [books, setBooks] = useState([]);
   const [filteredBooks, setFilteredBooks] = useState([]);
   const [showForm, setShowForm] = useState(false);
@@ -119,11 +121,11 @@ export default function HomePage({ user }) {
       }));
     } catch (error) {
       console.error(
-        "Ошибка создания книги:",
+        t("errors.createBook"),
         error.response?.data || error.message
       );
       alert(
-        "Ошибка при создании книги: " + (error.response?.data || error.message)
+        `${t("errors.createBook")} ${error.response?.data || error.message}`
       );
     }
   };
@@ -134,7 +136,7 @@ export default function HomePage({ user }) {
       setBooks(books.filter((el) => el.id !== id));
       setFilteredBooks(filteredBooks.filter((el) => el.id !== id));
     } catch (error) {
-      console.error("Ошибка удаления:", error);
+      console.error(t("errors.deleteError"), error);
     }
   };
 
@@ -142,30 +144,30 @@ export default function HomePage({ user }) {
     <div className="container fade-in">
       {!user ? (
         <>
-          <h1 className="text-center mb-4">
-            📚 Добро пожаловать в книжный уголок
-          </h1>
+          <h1 className="text-center mb-4">{t("home.welcome")}</h1>
 
           <div className="stats-section">
             <div className="row justify-center">
               <div className="col-md-4 stat-card">
                 <h2 className="stat-number">{stats.totalBooks}</h2>
-                <p className="stat-label">книг</p>
+                <p className="stat-label">{t("stats.books")}</p>
               </div>
               <div className="col-md-4 stat-card">
                 <h2 className="stat-number">{stats.totalAuthors}</h2>
-                <p className="stat-label">авторов</p>
+                <p className="stat-label">{t("stats.authors")}</p>
               </div>
               <div className="col-md-4 stat-card">
                 <h2 className="stat-number">{stats.totalRatings}</h2>
-                <p className="stat-label">оценок</p>
+                <p className="stat-label">{t("stats.ratings")}</p>
               </div>
             </div>
           </div>
         </>
       ) : (
         <div>
-          <h2 className="text-center mb-4">Личный кабинет {user.name}</h2>
+          <h2 className="text-center mb-4">
+            {t("home.personalCabinet", { name: user.name })}
+          </h2>
 
           <button
             className="btn btn-primary mb-4"
@@ -177,13 +179,13 @@ export default function HomePage({ user }) {
               }
             }}
           >
-            {showForm ? "✕ Отмена" : "+ Добавить книгу"}
+            {showForm ? t("home.addBookCancel") : t("home.addBook")}
           </button>
 
           {showForm && (
             <form className="book-form" onSubmit={submitHandler}>
               <div className="form-group">
-                <label className="form-label">Название книги</label>
+                <label className="form-label">{t("bookForm.titleLabel")}</label>
                 <input
                   className="form-control"
                   type="text"
@@ -193,7 +195,9 @@ export default function HomePage({ user }) {
               </div>
 
               <div className="form-group">
-                <label className="form-label">Автор книги</label>
+                <label className="form-label">
+                  {t("bookForm.authorLabel")}
+                </label>
                 <input
                   className="form-control"
                   type="text"
@@ -203,21 +207,22 @@ export default function HomePage({ user }) {
               </div>
 
               <div className="form-group">
-                <label className="form-label">Жанр</label>
+                <label className="form-label">{t("bookForm.genreLabel")}</label>
                 <input
                   className="form-control"
                   type="text"
                   name="genre"
-                  placeholder="Введите жанр книги (например: Фантастика, Детектив, Роман...)"
+                  placeholder={t("home.genrePlaceholder")}
                 />
                 <small className="form-text">
-                  Популярные жанры: Фантастика, Фэнтези, Детектив, Классическая
-                  литература, Философская проза, Антиутопия
+                  {t("bookForm.popularGenres")}
                 </small>
               </div>
 
               <div className="form-group">
-                <label className="form-label">Краткое описание книги</label>
+                <label className="form-label">
+                  {t("bookForm.descriptionLabel")}
+                </label>
                 <input
                   className="form-control"
                   type="text"
@@ -226,12 +231,14 @@ export default function HomePage({ user }) {
               </div>
 
               <div className="form-group">
-                <label className="form-label">Личные комментарии</label>
+                <label className="form-label">
+                  {t("bookForm.commentLabel")}
+                </label>
                 <input className="form-control" type="text" name="comment" />
               </div>
 
               <div className="form-group">
-                <label className="form-label">Фото обложки</label>
+                <label className="form-label">{t("bookForm.coverLabel")}</label>
                 <div className="radio-group mb-2">
                   <label className="radio-label">
                     <input
@@ -240,7 +247,7 @@ export default function HomePage({ user }) {
                       checked={imageType === "file"}
                       onChange={() => setImageType("file")}
                     />
-                    Загрузить файл
+                    {t("form.fileUpload")}
                   </label>
                   <label className="radio-label">
                     <input
@@ -249,7 +256,7 @@ export default function HomePage({ user }) {
                       checked={imageType === "url"}
                       onChange={() => setImageType("url")}
                     />
-                    Ссылка на изображение
+                    {t("form.imageUrl")}
                   </label>
                 </div>
                 {imageType === "file" ? (
@@ -269,7 +276,7 @@ export default function HomePage({ user }) {
                 )}
               </div>
               <button type="submit" className="btn btn-primary">
-                Создать
+                {t("form.create")}
               </button>
             </form>
           )}
@@ -283,36 +290,36 @@ export default function HomePage({ user }) {
             className="btn btn-outline"
             onClick={() => setShowFilters(!showFilters)}
           >
-            🔍 {showFilters ? "Скрыть" : "Показать"} фильтры
+            🔍 {showFilters ? t("home.filters.hide") : t("home.filters.show")}
             <span className="chevron">{showFilters ? "▲" : "▼"}</span>
           </button>
 
           {(filters.genre || filters.author || filters.sortByRating) && (
             <div className="active-filters">
-              <small>Активные фильтры:</small>
+              <small>{t("filters.activeFiltersLabel")}</small>
               {filters.genre && (
                 <span className="badge badge-secondary">
-                  Жанр: {filters.genre}
+                  {t("filters.genrePrefix")} {filters.genre}
                 </span>
               )}
               {filters.author && (
                 <span className="badge badge-secondary">
-                  Автор: {filters.author}
+                  {t("filters.authorPrefix")} {filters.author}
                 </span>
               )}
               {filters.sortByRating && (
                 <span className="badge badge-secondary">
-                  Сортировка:{" "}
+                  {t("filters.sortPrefix")}{" "}
                   {filters.sortByRating === "desc"
-                    ? "Высокий рейтинг"
-                    : "Низкий рейтинг"}
+                    ? t("home.filters.sortHigh")
+                    : t("home.filters.sortLow")}
                 </span>
               )}
               <button
                 className="btn btn-secondary btn-sm"
                 onClick={clearFilters}
               >
-                Очистить
+                {t("filters.clear")}
               </button>
             </div>
           )}
@@ -323,7 +330,9 @@ export default function HomePage({ user }) {
             <div className="row">
               <div className="col-md-3">
                 <div className="form-group">
-                  <label className="form-label">Жанр</label>
+                  <label className="form-label">
+                    {t("filters.genreLabel")}
+                  </label>
                   <select
                     className="form-select"
                     value={filters.genre}
@@ -331,7 +340,7 @@ export default function HomePage({ user }) {
                       handleFilterChange("genre", e.target.value)
                     }
                   >
-                    <option value="">Все жанры</option>
+                    <option value="">{t("filters.allGenres")}</option>
                     {genres.map((genre) => (
                       <option key={genre} value={genre}>
                         {genre}
@@ -342,11 +351,13 @@ export default function HomePage({ user }) {
               </div>
               <div className="col-md-3">
                 <div className="form-group">
-                  <label className="form-label">Автор</label>
+                  <label className="form-label">
+                    {t("filters.authorLabel")}
+                  </label>
                   <input
                     className="form-control"
                     type="text"
-                    placeholder="Поиск по автору"
+                    placeholder={t("home.filters.searchAuthor")}
                     value={filters.author}
                     onChange={(e) =>
                       handleFilterChange("author", e.target.value)
@@ -356,7 +367,7 @@ export default function HomePage({ user }) {
               </div>
               <div className="col-md-3">
                 <div className="form-group">
-                  <label className="form-label">Сортировка по рейтингу</label>
+                  <label className="form-label">{t("filters.sortLabel")}</label>
                   <select
                     className="form-select"
                     value={filters.sortByRating}
@@ -364,9 +375,9 @@ export default function HomePage({ user }) {
                       handleFilterChange("sortByRating", e.target.value)
                     }
                   >
-                    <option value="">По умолчанию</option>
-                    <option value="desc">Сначала высокий рейтинг</option>
-                    <option value="asc">Сначала низкий рейтинг</option>
+                    <option value="">{t("filters.default")}</option>
+                    <option value="desc">{t("home.filters.sortHigh")}</option>
+                    <option value="asc">{t("home.filters.sortLow")}</option>
                   </select>
                 </div>
               </div>
@@ -374,13 +385,13 @@ export default function HomePage({ user }) {
 
             <div className="filters-actions">
               <button className="btn btn-secondary" onClick={clearFilters}>
-                Очистить все фильтры
+                {t("filters.clearAll")}
               </button>
               <button
                 className="btn btn-primary"
                 onClick={() => setShowFilters(false)}
               >
-                Применить фильтры
+                {t("filters.apply")}
               </button>
             </div>
           </div>
@@ -407,7 +418,7 @@ export default function HomePage({ user }) {
               className="text-center"
               style={{ color: "#777", padding: "2rem" }}
             >
-              Книги не найдены
+              {t("home.notFound")}
             </p>
           </div>
         )}

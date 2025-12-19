@@ -1,0 +1,159 @@
+{
+  "home": {
+    "welcome": "📚 Welcome to the Book Corner",
+    "personalCabinet": "Welcome, {{name}}",
+    "addBook": "+ Add Book",
+    "addBookCancel": "✕ Cancel",
+    "genrePlaceholder": "Enter a genre (e.g. Fantasy, Thriller, Romance...)",
+    "filters": {
+      "show": "Show filters",
+      "hide": "Hide filters",
+      "clear": "Clear filters",
+      "searchAuthor": "Search by author",
+      "sortHigh": "High rating first",
+      "sortLow": "Low rating first"
+    },
+    "notFound": "No books found"
+  },
+  "filters": {
+    "activeFiltersLabel": "Active filters:",
+    "genrePrefix": "Genre:",
+    "authorPrefix": "Author:",
+    "sortPrefix": "Sort:",
+    "clear": "Clear",
+    "clearAll": "Clear all filters",
+    "apply": "Apply filters",
+    "default": "Default",
+    "allGenres": "All genres",
+    "genreLabel": "Genre",
+    "authorLabel": "Author",
+    "sortLabel": "Sort by rating"
+  },
+  "stats": {
+    "books": "books",
+    "authors": "authors",
+    "ratings": "ratings"
+  },
+  "card": {
+    "details": "Details",
+    "addFavorite": "⭐ Add to Favorites",
+    "delete": "Delete",
+    "deleteFavorite": "Remove from Favorites",
+    "cover": "Cover",
+    "rating": "Rating: {{rating}}"
+  },
+  "favorite": {
+    "title": "⭐ My Favorite Books",
+    "empty": "Your favorites list is empty. Add books to see them here."
+  },
+  "chat": {
+    "title": "Ask the librarian",
+    "open": "Open chat",
+    "aria": "Chat with librarian",
+    "close": "Close chat",
+    "placeholder": "What are you interested in?",
+    "greeting": "Hi, I'm your assistant!",
+    "subtitle": "I can help you find books! 📖",
+    "busy": "Sorry, the librarian is on a break 😴",
+    "thinking": "Thinking...",
+    "examples": [
+      "Master and Margarita",
+      "1984",
+      "The Little Prince",
+      "Crime and Punishment",
+      "Harry Potter and the Philosopher's Stone",
+      "War and Peace",
+      "Sherlock Holmes: The Hound of the Baskervilles",
+      "The Alchemist"
+    ]
+  },
+  "login": {
+    "enterPhone": "Please enter phone number",
+    "enterPhoneAndCode": "Please enter phone and code",
+    "phoneLabel": "Phone (SMS)",
+    "emailPlaceholder": "Enter email",
+    "passwordPlaceholder": "Enter password",
+    "login": "Log in",
+    "loading": "Signing in...",
+    "sendCode": "Send code",
+    "codePlaceholder": "SMS code",
+    "noAccount": "No account?",
+    "register": "Register",
+    "resend": "Resend in {{seconds}}s",
+    "useSms": "Use SMS",
+    "phoneExample": "+7 (999) 123-45-67"
+  },
+  "bookDetail": {
+    "notRatedYet": "User hasn't rated this book yet",
+    "reading": "Reading: {{title}}",
+    "rated": "Rated ({{rating}}/5)",
+    "notFound": "Book not found",
+    "noRatings": "No ratings",
+    "yourRating": "Your rating",
+    "rateBook": "Rate this book",
+    "commentPlaceholder": "Share your thoughts about the book...",
+    "sending": "Sending...",
+    "sendComment": "Send comment",
+    "commentAdded": "Comment added!",
+    "commentAddError": "Failed to add comment. Try again.",
+    "commentUpdated": "Comment updated!",
+    "commentUpdateError": "Failed to update comment.",
+    "confirmDeleteComment": "Are you sure you want to delete this comment?",
+    "commentDeleted": "Comment deleted!",
+    "commentDeleteError": "Failed to delete comment."
+  },
+  "common": {
+    "back": "← Back",
+    "returnHome": "Return to home",
+    "close": "Close",
+    "description": "Description",
+    "rating": "Book rating",
+    "leaveComment": "Leave a comment",
+    "comments": "Comments",
+    "noComments": "No comments yet. Be the first!",
+    "save": "Save",
+    "cancel": "Cancel",
+    "download": "Download",
+    "read": "Read",
+    "loading": "Loading"
+  },
+  "registration": {
+    "namePlaceholder": "Enter name",
+    "phoneLabel": "Phone",
+    "emailPlaceholder": "Enter email",
+    "passwordPlaceholder": "Create password",
+    "submit": "Register"
+  },
+  "footer": {
+    "copyright": "© {{year}} Bookworms. All rights reserved."
+  },
+  "navbar": {
+    "brand": "🎄 📚 Book Corner 🎄",
+    "register": "🎁 Register",
+    "login": "🔔 Log in",
+    "favorites": "⭐ Favorites",
+    "logout": "🎅 Log out"
+  },
+  "form": {
+    "fileUpload": "Upload file",
+    "imageUrl": "Image URL",
+    "create": "Create",
+    "cancel": "Cancel",
+    "submit": "Submit"
+  },
+  "bookForm": {
+    "titleLabel": "Book title",
+    "authorLabel": "Book author",
+    "genreLabel": "Genre",
+    "descriptionLabel": "Short description",
+    "commentLabel": "Personal notes",
+    "coverLabel": "Cover image",
+    "popularGenres": "Popular genres: Fantasy, Fiction, Thriller, Classic literature, Philosophical prose, Dystopia"
+  },
+  "errors": {
+    "favAddFailed": "Failed to add book to favorites",
+    "registration": "Registration error",
+    "createBook": "Failed to create book:",
+    "deleteError": "Failed to delete item"
+  }
+}
