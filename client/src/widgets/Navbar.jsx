@@ -15,6 +15,17 @@ export default function CustomNavbar({ user, logoutHandler }) {
     if (typeof document !== "undefined") document.documentElement.lang = lng;
   };
 
+  const handleBurgerClick = () => {
+    // Проверяем, является ли устройство мобильным (ширина экрана меньше 768px)
+    const isMobile = window.innerWidth < 768;
+
+    if (isMobile) {
+      alert("Поверните телефон горизонтально");
+    } else {
+      setIsOpen(!isOpen);
+    }
+  };
+
   return (
     <nav className="navbar">
       <div className="navbar-container">
@@ -49,7 +60,7 @@ export default function CustomNavbar({ user, logoutHandler }) {
         </div>
         <button
           className="navbar-toggle"
-          onClick={() => setIsOpen(!isOpen)}
+          onClick={handleBurgerClick}
           aria-label="Toggle navigation"
         >
           ☰
