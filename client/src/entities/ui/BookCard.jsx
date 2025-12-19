@@ -28,7 +28,13 @@ function BookCard({ book, user, deleteHandler, isFavoritePage = false }) {
         alt={book.title}
         className="book-card-image"
         onError={(e) => {
-          e.target.src = "https://via.placeholder.com/300x400?text=Обложка";
+          // prevent infinite onError loop and use embedded SVG placeholder
+          e.target.onerror = null;
+          e.target.src =
+            "data:image/svg+xml;utf8," +
+            encodeURIComponent(
+              '<svg xmlns="http://www.w3.org/2000/svg" width="300" height="400"><rect width="100%" height="100%" fill="#f2f2f2"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-family="Georgia, serif" font-size="20" fill="#888">Обложка</text></svg>'
+            );
         }}
       />
       <div className="book-card-body">

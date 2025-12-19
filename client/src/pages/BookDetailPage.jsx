@@ -80,7 +80,7 @@ export default function BookDetailPage() {
       <button className="btn btn-secondary mb-3" onClick={() => navigate(-1)}>
         ← Назад
       </button>
-      
+
       <div className="row">
         <div className="col-md-4">
           <div className="book-detail-image">
@@ -88,14 +88,19 @@ export default function BookDetailPage() {
               src={book.image}
               alt={`Обложка книги ${book.title}`}
               onError={(e) => {
-                e.target.src = 'https://via.placeholder.com/400x600?text=Обложка';
+                e.target.onerror = null;
+                e.target.src =
+                  "data:image/svg+xml;utf8," +
+                  encodeURIComponent(
+                    '<svg xmlns="http://www.w3.org/2000/svg" width="400" height="600"><rect width="100%" height="100%" fill="#f8f8f8"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-family="Georgia, serif" font-size="24" fill="#999">Обложка</text></svg>'
+                  );
               }}
             />
           </div>
         </div>
         <div className="col-md-8">
           <h1>{book.title}</h1>
-          <h2 style={{ color: '#777', fontStyle: 'italic' }}>{book.author}</h2>
+          <h2 style={{ color: "#777", fontStyle: "italic" }}>{book.author}</h2>
           {book.genre && (
             <div className="mb-3">
               <span className="badge badge-secondary">{book.genre}</span>
@@ -116,15 +121,16 @@ export default function BookDetailPage() {
             >
               📖 Читать
             </button>
-            <button className="btn btn-info">
-              ⬇ Скачать
-            </button>
+            <button className="btn btn-info">⬇ Скачать</button>
           </div>
 
-          <form className="review-form" onSubmit={(e) => {
-            e.preventDefault();
-            alert('Отзыв отправлен!');
-          }}>
+          <form
+            className="review-form"
+            onSubmit={(e) => {
+              e.preventDefault();
+              alert("Отзыв отправлен!");
+            }}
+          >
             <input
               className="form-control"
               type="text"
@@ -142,7 +148,7 @@ export default function BookDetailPage() {
           <div className="modal" onClick={(e) => e.stopPropagation()}>
             <div className="modal-header">
               <h3 className="modal-title">{book.title}</h3>
-              <button 
+              <button
                 className="modal-close"
                 onClick={() => setShowReadModal(false)}
               >
@@ -157,8 +163,8 @@ export default function BookDetailPage() {
               )}
             </div>
             <div className="modal-footer">
-              <button 
-                className="btn btn-secondary" 
+              <button
+                className="btn btn-secondary"
                 onClick={() => setShowReadModal(false)}
               >
                 Закрыть
