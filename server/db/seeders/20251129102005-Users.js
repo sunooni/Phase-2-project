@@ -8,7 +8,7 @@ module.exports = {
             {
         name: 'Анна Книголюбова',
         email: 'anna@example.com',
-        phone: '+79161234567',
+        phone: '+79141521601',
         hashpass: 'password123',
         avatarUrl: 'https://i.pravatar.cc/150?img=1',
         role: 'user',

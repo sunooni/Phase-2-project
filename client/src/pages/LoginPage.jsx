@@ -1,128 +1,196 @@
 import { Container } from "react-bootstrap";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-function LoginPage({ loginHandler }) {
+function LoginPage({ loginHandler, sendOtpHandler, verifyOtpHandler }) {
   const [isLoading, setIsLoading] = useState(false);
   const [loginType, setLoginType] = useState("email");
 
-  const handleSubmit = async (e) => {
+  const [phoneValue, setPhoneValue] = useState("");
+  const [codeValue, setCodeValue] = useState("");
+  const [otpSent, setOtpSent] = useState(false);
+  const [countdown, setCountdown] = useState(0);
+
+  useEffect(() => {
+    let t;
+    if (countdown > 0) t = setTimeout(() => setCountdown((c) => c - 1), 1000);
+    return () => clearTimeout(t);
+  }, [countdown]);
+
+  const handleEmailSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
-    await loginHandler(e);
-    setIsLoading(false);
+    try {
+      await loginHandler(e);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleSendOtp = async () => {
+    if (!phoneValue) return alert("Введите телефон");
+    setIsLoading(true);
+    try {
+      await sendOtpHandler(phoneValue);
+      setOtpSent(true);
+      setCountdown(60);
+    } catch (err) {
+      alert(err.response?.data?.message || err.message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleVerifyOtp = async () => {
+    if (!phoneValue || !codeValue) return alert("Введите телефон и код");
+    setIsLoading(true);
+    try {
+      await verifyOtpHandler({ phone: phoneValue, code: codeValue });
+    } catch (err) {
+      alert(err.response?.data?.message || err.message);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
-    <Container className="auth-container">
+    <Container
+      className="d-flex justify-content-center align-items-center py-5"
+      style={{ minHeight: "calc(100vh - 72px)" }}
+    >
       <div className="login-card shadow-lg border-0 animate__animated animate__fadeInUp">
         <div
-          className="card-header text-white text-center"
+          className="card-header text-white text-center py-4"
           style={{
             background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-            minHeight: "120px",
+            minHeight: 150,
           }}
         >
           <h3 className="mb-0 fw-bold">
-            <i className="fas fa-sign-in-alt me-2"></i>
-            Вход в аккаунт
+            <i className="fas fa-sign-in-alt me-2"></i>Вход в аккаунт
           </h3>
         </div>
-        <div className="card-body">
-          <Form onSubmit={handleSubmit}>
-            <Form.Group className="mb-4 position-relative">
+
+        <div className="card-body p-4">
+          <Form onSubmit={handleEmailSubmit}>
+            <Form.Group className="mb-3">
               <Form.Label className="form-label fw-semibold text-muted">
-                <i
-                  className={`fas ${
-                    loginType === "email" ? "fa-envelope" : "fa-phone"
-                  } me-2`}
-                ></i>
                 Данные для входа
               </Form.Label>
 
-              {/* Переключатель типа входа */}
               <div className="mb-2">
                 <Form.Check
+                  inline
                   type="radio"
                   id="login-email"
                   name="loginType"
                   label="Email"
                   checked={loginType === "email"}
                   onChange={() => setLoginType("email")}
-                  inline
                 />
                 <Form.Check
-                  type="radio"
-                  id="login-phone"
-                  name="loginType"
-                  label="Телефон"
-                  checked={loginType === "phone"}
-                  onChange={() => setLoginType("phone")}
                   inline
+                  type="radio"
+                  id="login-phone-otp"
+                  name="loginType"
+                  label="Телефон (SMS)"
+                  checked={loginType === "phone-otp"}
+                  onChange={() => setLoginType("phone-otp")}
                 />
               </div>
 
-              <div className="input-group">
-                <span className="input-group-text bg-white border-end-0"></span>
-                {loginType === "email" ? (
-                  <Form.Control
-                    type="email"
-                    placeholder="Введите email"
-                    name="email"
-                    className="form-control border-start-0 shadow-sm focus-ring"
-                    required
-                  />
-                ) : (
-                  <Form.Control
-                    type="tel"
-                    placeholder="+7 (999) 123-45-67"
-                    name="phone"
-                    className="form-control border-start-0 shadow-sm focus-ring"
-                    pattern="[+]?[0-9\s\-\(\)]+"
-                    required
-                  />
-                )}
-              </div>
-            </Form.Group>
-
-            <Form.Group className="mb-4 position-relative">
-              <Form.Label className="form-label fw-semibold text-muted">
-                <i className="fas fa-lock me-2"></i>Пароль
-              </Form.Label>
-              <div className="input-group">
-                <span className="input-group-text bg-white border-end-0"></span>
-                <Form.Control
-                  type="password"
-                  placeholder="Введите пароль"
-                  name="password"
-                  className="form-control border-start-0 shadow-sm focus-ring"
-                  required
-                />
-              </div>
-            </Form.Group>
-
-            <Button
-              variant="primary"
-              type="submit"
-              className="w-100 btn-lg fw-bold shadow-lg btn-gradient-primary py-3"
-              disabled={isLoading}
-            >
-              {isLoading ? (
+              {loginType === "email" && (
                 <>
-                  <span
-                    className="spinner-border spinner-border-sm me-2"
-                    role="status"
-                  ></span>
-                  Вход...
+                  <div className="input-group input-group-lg mb-3">
+                    <span className="input-group-text bg-white border-end-0">
+                      <i className="fas fa-envelope text-primary"></i>
+                    </span>
+                    <Form.Control
+                      type="email"
+                      name="email"
+                      placeholder="Введите email"
+                      className="form-control-lg border-start-0"
+                      required
+                    />
+                  </div>
+                  <div className="input-group input-group-lg mb-3">
+                    <span className="input-group-text bg-white border-end-0">
+                      <i className="fas fa-lock text-primary"></i>
+                    </span>
+                    <Form.Control
+                      type="password"
+                      name="password"
+                      placeholder="Введите пароль"
+                      className="form-control-lg border-start-0"
+                      required
+                    />
+                  </div>
+                  <Button
+                    variant="primary"
+                    type="submit"
+                    className="w-100 btn-lg fw-bold"
+                    disabled={isLoading}
+                  >
+                    {isLoading ? "Вход..." : "Войти"}
+                  </Button>
                 </>
-              ) : (
-                "Войти"
               )}
-            </Button>
+
+              {loginType === "phone-otp" && (
+                <>
+                  <div className="input-group input-group-lg mb-3">
+                    <span className="input-group-text bg-white border-end-0">
+                      <i className="fas fa-phone text-primary"></i>
+                    </span>
+                    <input
+                      type="tel"
+                      value={phoneValue}
+                      onChange={(e) => setPhoneValue(e.target.value)}
+                      placeholder="+7 (999) 123-45-67"
+                      className="form-control form-control-lg border-start-0"
+                      required
+                    />
+                    <button
+                      type="button"
+                      className="btn btn-outline-primary ms-2"
+                      onClick={handleSendOtp}
+                      disabled={isLoading || countdown > 0}
+                    >
+                      {countdown > 0
+                        ? `Отправить снова ${countdown}s`
+                        : "Отправить код"}
+                    </button>
+                  </div>
+                  {otpSent && (
+                    <div className="input-group input-group-lg mb-3">
+                      <span className="input-group-text bg-white border-end-0">
+                        <i className="fas fa-key text-primary"></i>
+                      </span>
+                      <input
+                        type="text"
+                        value={codeValue}
+                        onChange={(e) => setCodeValue(e.target.value)}
+                        placeholder="Код из SMS"
+                        className="form-control form-control-lg border-start-0"
+                      />
+                      <button
+                        type="button"
+                        className="btn btn-primary ms-2"
+                        onClick={handleVerifyOtp}
+                        disabled={isLoading}
+                      >
+                        Войти
+                      </button>
+                    </div>
+                  )}
+                </>
+              )}
+            </Form.Group>
           </Form>
         </div>
-        <div className="card-footer bg-light text-center">
+
+        <div className="card-footer bg-light text-center py-3">
           <small className="text-muted">
             Нет аккаунта?{" "}
             <a
