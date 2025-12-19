@@ -1,15 +1,13 @@
-.login-card, .register-card {
-  max-width: 450px;
+.login-card,
+.register-card {
+  max-width: 240px;
   width: 100%;
-  border-radius: 20px;
+  border-radius: 12px;
   overflow: hidden;
   backdrop-filter: blur(10px);
   transition: all 0.3s ease;
-}
-
-.login-card:hover, .register-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 25px 50px rgba(0,0,0,0.15) !important;
+  flex-shrink: 0;
+  margin: 0;
 }
 
 .bg-gradient-primary {
@@ -32,13 +30,14 @@
   transition: all 0.3s ease;
 }
 
-.btn-gradient-primary:hover, .btn-gradient-success:hover {
+.btn-gradient-primary:hover,
+.btn-gradient-success:hover {
   transform: translateY(-2px);
-  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
 }
 
 .focus-ring:focus {
-  box-shadow: 0 0 0 0.25rem rgba(255,255,255,0.25);
+  box-shadow: 0 0 0 0.25rem rgba(255, 255, 255, 0.25);
   border-color: #86b7fe;
 }
 
@@ -48,7 +47,7 @@
 }
 
 .user-icon i {
-  background: rgba(255,255,255,0.2);
+  background: rgba(255, 255, 255, 0.2);
   padding: 20px;
   border-radius: 50%;
   backdrop-filter: blur(10px);
@@ -60,13 +59,18 @@
 }
 
 .card-header::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.3),
+    transparent
+  );
   transition: left 0.5s;
 }
 
@@ -74,14 +78,113 @@
   left: 100%;
 }
 
+.auth-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f8f9fa; /* Добавим легкий фон, чтобы карточка выделялась */
+}
+
+.login-card .card-body,
+.register-card .card-body {
+  padding: 0.75rem !important;
+}
+
+.login-card .card-header,
+.register-card .card-header {
+  padding: 0.5rem !important;
+  min-height: 50px !important;
+}
+
+.login-card .card-footer,
+.register-card .card-footer {
+  padding: 0.4rem !important;
+}
+
+/* Компактные отступы между элементами формы */
+.login-card .mb-4,
+.register-card .mb-4 {
+  margin-bottom: 0.5rem !important;
+}
+
+.login-card .mb-2,
+.register-card .mb-2 {
+  margin-bottom: 0.25rem !important;
+}
+
+.login-card .mb-1,
+.register-card .mb-1 {
+  margin-bottom: 0.15rem !important;
+}
+
+/* Уменьшаем размер иконки пользователя */
+.user-icon i {
+  background: rgba(255, 255, 255, 0.2);
+  padding: 6px !important;
+  border-radius: 50%;
+  backdrop-filter: blur(10px);
+  font-size: 1rem !important;
+}
+
+/* Уменьшаем размеры элементов формы */
+.login-card .form-control,
+.register-card .form-control {
+  font-size: 0.75rem !important;
+  padding: 0.25rem 0.5rem !important;
+}
+
+.login-card .form-label,
+.register-card .form-label {
+  font-size: 0.7rem !important;
+  margin-bottom: 0.15rem !important;
+}
+
+.login-card .btn,
+.register-card .btn {
+  padding: 0.35rem 0.75rem !important;
+  font-size: 0.75rem !important;
+}
+
+/* Уменьшаем размер заголовков */
+.login-card h6,
+.register-card h6 {
+  font-size: 0.8rem !important;
+}
+
+/* Уменьшаем размер футера */
+.login-card .card-footer small,
+.register-card .card-footer small {
+  font-size: 0.65rem !important;
+}
+
 /* Адаптивность */
 @media (max-width: 576px) {
-  .login-card, .register-card {
-    margin: 1rem;
-    border-radius: 15px;
+  .login-card,
+  .register-card {
+    max-width: 220px;
+    width: 90%;
+    margin: 0.25rem;
+    border-radius: 10px;
   }
-  
-  .card-body {
-    padding: 2rem 1.5rem !important;
+
+  .login-card .card-body,
+  .register-card .card-body {
+    padding: 0.6rem !important;
+  }
+
+  .login-card .card-header,
+  .register-card .card-header {
+    padding: 0.4rem !important;
+    min-height: 45px !important;
+  }
+
+  .login-card .card-footer,
+  .register-card .card-footer {
+    padding: 0.3rem !important;
+  }
+
+  .auth-container {
+    padding: 0.5rem 0.25rem;
   }
 }
