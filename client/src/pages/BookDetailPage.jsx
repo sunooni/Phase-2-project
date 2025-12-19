@@ -227,8 +227,9 @@ export default function BookDetailPage({ user }) {
         ← Назад
       </button>
 
-      <div className="row">
-        <div className="col-md-4">
+      <div className="book-detail-layout">
+        {/* Левая колонка - Изображение книги */}
+        <div className="book-detail-image-column">
           <div className="book-detail-image">
             <img
               src={book.image}
@@ -244,9 +245,12 @@ export default function BookDetailPage({ user }) {
             />
           </div>
         </div>
-        <div className="col-md-8">
+
+        {/* Средняя колонка - Основная информация */}
+        <div className="book-detail-info-column">
           <h1>{book.title}</h1>
           <h2 style={{ color: "#777", fontStyle: "italic" }}>{book.author}</h2>
+
           {book.genre && (
             <div className="mb-3">
               <span className="badge badge-secondary">{book.genre}</span>
@@ -277,7 +281,7 @@ export default function BookDetailPage({ user }) {
             <h5 style={{ color: "#333", marginBottom: "0.5rem" }}>
               Рейтинг книги
             </h5>
-            <div className="d-flex align-items-center mb-2">
+            <div className="rating-display">
               {renderStars(getCurrentRating(), false)}
               <span style={{ marginLeft: "10px", color: "#666" }}>
                 {getCurrentRating() > 0
@@ -292,7 +296,7 @@ export default function BookDetailPage({ user }) {
             <h5 style={{ color: "#333", marginBottom: "0.5rem" }}>
               {hasRated ? "Ваша оценка" : "Оцените книгу"}
             </h5>
-            <div className="d-flex align-items-center">
+            <div className="user-rating-display">
               {renderStars(hoverRating || userRating, true)}
               {submittingRating && (
                 <span style={{ marginLeft: "10px", color: "#666" }}>
@@ -318,13 +322,14 @@ export default function BookDetailPage({ user }) {
             </div>
           </div>
 
-          <div className="book-detail-actions mb-3">
-            <button className="btn btn-info me-2" onClick={handleReadBook}>
-              📖 Читать
-            </button>
+          <div className="book-detail-actions mb-4">
+            <button className="btn btn-info">📖 Читать</button>
             <button className="btn btn-info">⬇ Скачать</button>
           </div>
+        </div>
 
+        {/* Правая колонка - Комментарии */}
+        <div className="book-detail-comments-column">
           {/* Форма добавления комментария */}
           <div className="mb-4">
             <h5 style={{ color: "#333", marginBottom: "1rem" }}>
@@ -365,8 +370,8 @@ export default function BookDetailPage({ user }) {
               <div className="comments-list">
                 {comments.map((comment) => (
                   <div key={comment.id} className="comment-item mb-3">
-                    <div className="comment-header d-flex justify-content-between align-items-center mb-2">
-                      <div>
+                    <div className="comment-header">
+                      <div className="comment-user-info">
                         <strong style={{ color: "#333" }}>
                           {comment.user.name}
                         </strong>
@@ -391,13 +396,13 @@ export default function BookDetailPage({ user }) {
                             className="btn btn-sm btn-outline-secondary me-2"
                             onClick={() => startEditComment(comment)}
                           >
-                            ✏️ Изменить
+                            ✏️
                           </button>
                           <button
                             className="btn btn-sm btn-outline-danger"
                             onClick={() => deleteComment(comment.id)}
                           >
-                            🗑️ Удалить
+                            🗑️
                           </button>
                         </div>
                       )}
