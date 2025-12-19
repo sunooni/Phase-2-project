@@ -22,6 +22,9 @@ export default function BookDetailPage({ user }) {
   const [editingComment, setEditingComment] = useState(null);
   const [editText, setEditText] = useState("");
 
+  // Новое состояние для модального окна
+  const [showReadModal, setShowReadModal] = useState(false);
+
   useEffect(() => {
     const fetchBook = async () => {
       try {
@@ -40,7 +43,6 @@ export default function BookDetailPage({ user }) {
             setHasRated(true);
           }
         } catch (userRatingError) {
-          // Если не удалось получить пользовательский рейтинг, это не критично
           console.log("Пользователь еще не оценивал эту книгу");
         }
 
@@ -209,6 +211,16 @@ export default function BookDetailPage({ user }) {
     }
   };
 
+  // Обработчик для кнопки "Читать"
+  const handleReadBook = () => {
+    setShowReadModal(true);
+  };
+
+  // Закрытие модального окна
+  const closeReadModal = () => {
+    setShowReadModal(false);
+  };
+
   return (
     <div className="container py-4 fade-in">
       <button className="btn btn-secondary mb-3" onClick={() => navigate(-1)}>
@@ -307,7 +319,9 @@ export default function BookDetailPage({ user }) {
           </div>
 
           <div className="book-detail-actions mb-3">
-            <button className="btn btn-info">📖 Читать</button>
+            <button className="btn btn-info me-2" onClick={handleReadBook}>
+              📖 Читать
+            </button>
             <button className="btn btn-info">⬇ Скачать</button>
           </div>
 
@@ -435,6 +449,90 @@ export default function BookDetailPage({ user }) {
           </div>
         </div>
       </div>
+
+      {/* Модальное окно для чтения книги */}
+      {showReadModal && book.description && (
+        <>
+          {/* Затемнение фона */}
+          <div
+            className="modal-backdrop"
+            style={{
+              position: "fixed",
+              top: 0,
+              left: 0,
+              width: "100%",
+              height: "100%",
+              backgroundColor: "rgba(0, 0, 0, 0.5)",
+              zIndex: 1040,
+            }}
+            onClick={closeReadModal}
+          />
+          
+          {/* Модальное окно */}
+          <div
+            className="read-modal"
+            style={{
+              position: "fixed",
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+              width: "90%",
+              maxWidth: "800px",
+              maxHeight: "80vh",
+              backgroundColor: "#fff",
+              borderRadius: "12px",
+              boxShadow: "0 20px 60px rgba(0, 0, 0, 0.3)",
+              zIndex: 1050,
+              overflow: "hidden",
+            }}
+          >
+            <div className="modal-header" style={{ padding: "1.5rem", borderBottom: "1px solid #e9ecef", backgroundColor: "#f8f9fa" }}>
+              <h3 style={{ margin: 0, color: "#333" }}>
+                📖 Чтение: {book.title}
+              </h3>
+              <button
+                className="btn-close"
+                style={{
+                  background: "none",
+                  border: "none",
+                  fontSize: "24px",
+                  cursor: "pointer",
+                  color: "#666",
+                  padding: 0,
+                  width: "30px",
+                  height: "30px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+                onClick={closeReadModal}
+              >
+                ×
+              </button>
+            </div>
+            
+            <div className="modal-body" style={{ padding: "2rem", maxHeight: "60vh", overflowY: "auto" }}>
+              <div
+                dangerouslySetInnerHTML={{ __html: book.description }}
+                style={{
+                  lineHeight: "1.8",
+                  color: "#333",
+                  fontSize: "16px",
+                }}
+              />
+            </div>
+            
+            <div className="modal-footer" style={{ padding: "1rem 1.5rem", borderTop: "1px solid #e9ecef", backgroundColor: "#f8f9fa" }}>
+              <button
+                className="btn btn-secondary me-2"
+                onClick={closeReadModal}
+              >
+                Закрыть
+              </button>
+            </div>
+          </div>
+        </>
+      )}
     </div>
   );
 }
