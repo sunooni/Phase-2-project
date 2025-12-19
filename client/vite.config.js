@@ -1,7 +1,16 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 
+
+
+
 export default defineConfig({
+
+  
+  build: {
+       outDir: '../server/dist'
+   },
+   base: '/',
   plugins: [react()],
   server: {
     proxy: {
@@ -9,7 +18,7 @@ export default defineConfig({
         target: "http://localhost:3000",
       },
       // proxy uploaded images to backend so client can load /uploads/xxx during dev
-      "/uploads": {
+      "/uploads": { 
         target: "http://localhost:3000",
         changeOrigin: true,
         rewrite: (path) => path,

@@ -10,6 +10,8 @@ const cookieParser = require('cookie-parser');
 
 const app = express();
 
+app.use(express.static(path.join(__dirname, '..', 'dist')));
+
 app.use(morgan('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -23,6 +25,10 @@ app.use('/api/books', bookRouter);
 app.use('/api/favorites', favoriteRouter);
 app.use('/api/ai', iaRouter);
 app.use('/api/api/ai', iaRouter);
+
+app.get('/{*splat}', (req, res) => {
+  res.sendFile(path.join(__dirname, '..', 'dist', 'index.html'));
+});
 
 // eslint-disable-next-line no-unused-vars
 app.use((err, req, res, next) => {
