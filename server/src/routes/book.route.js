@@ -29,7 +29,7 @@ router.get('/', BookController.getAllBooks);
 router.post('/', verifyAccessToken, upload.single('cover'), BookController.createBook);
 router.get('/genres', BookController.getGenres);
 // router.post('/', verifyRefreshToken, BookController.createBook);
-router.get('/:id', verifyAccessToken, validateId, BookController.getBookById);
+router.get('/:id', BookController.getBookById);
 router.get(
   '/:id/user-rating',
   verifyAccessToken,
