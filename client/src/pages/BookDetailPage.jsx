@@ -323,7 +323,9 @@ export default function BookDetailPage({ user }) {
           </div>
 
           <div className="book-detail-actions mb-4">
-            <button className="btn btn-info">📖 Читать</button>
+            <button className="btn btn-info me-2" onClick={handleReadBook}>
+              📖 Читать
+            </button>
             <button className="btn btn-info">⬇ Скачать</button>
           </div>
         </div>
