@@ -246,8 +246,20 @@ p {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  flex-wrap: nowrap;
+  flex-wrap: wrap;
+  margin-bottom: 0.5rem;
+}
+
+/* Rating row - отображается после жанров */
+.rating-row {
+  display: flex;
+  align-items: center;
   margin-bottom: 0.75rem;
+}
+
+.rating-text {
+  font-weight: 500;
+  color: #666;
 }
 
 /* ensure action buttons stay at the bottom of the card */
