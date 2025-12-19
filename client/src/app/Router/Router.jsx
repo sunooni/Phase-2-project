@@ -3,7 +3,7 @@ import React from "react";
 import { Routes, Route, BrowserRouter } from "react-router";
 import Layout from "../Layout";
 import RegisterPage from "../../pages/RegistrationPage";
-import LoginPage from "../../pages/LoginPage";
+import LoginPage from "../../pages/LoginPageClean";
 import ProtectedRoute from "../../shared/ProtectedRoute";
 import FavoritePage from "../../pages/FavoritePage";
 import BookDetailPage from "../../pages/BookDetailPage";
