@@ -31,12 +31,12 @@ export default function BookDetailPage({ user }) {
 
         // 1. Используем fetch для публичного запроса данных о книге (не требует токена)
         const response = await fetch(`/api/books/${id}`);
-        
+
         if (!response.ok) {
           // Вызываем ошибку, если статус не 200
           throw new Error("Книга не найдена или произошла ошибка сервера.");
         }
-        
+
         const data = await response.json();
         setBook(data);
         setComments(data.comments || []);
@@ -53,14 +53,15 @@ export default function BookDetailPage({ user }) {
             }
           } catch (userRatingError) {
             // Это ожидаемо, если пользователь не ставил оценку
-            console.log("Пользователь еще не оценивал эту книгу или запрос на оценку не прошел без токена.");
+            console.log(
+              "Пользователь еще не оценивал эту книгу или запрос на оценку не прошел без токена."
+            );
           }
         } else {
-            // Сброс пользовательских оценок при отсутствии пользователя
-            setUserRating(0);
-            setHasRated(false);
+          // Сброс пользовательских оценок при отсутствии пользователя
+          setUserRating(0);
+          setHasRated(false);
         }
-        
       } catch (err) {
         console.error("Ошибка при загрузке книги:", err);
         setError(err.message || "Не удалось загрузить информацию о книге.");
@@ -98,7 +99,7 @@ export default function BookDetailPage({ user }) {
 
   const submitRating = async (rating) => {
     if (!user || submittingRating || hasRated) return; // Проверка авторизации
-    
+
     try {
       setSubmittingRating(true);
       await axiosinstance.post(`/books/${id}/rating`, { rating });
@@ -111,7 +112,9 @@ export default function BookDetailPage({ user }) {
       alert(`Спасибо за оценку! Вы поставили ${rating} звезд.`);
     } catch (error) {
       console.error("Ошибка при отправке оценки:", error);
-      alert("Не удалось отправить оценку. Попробуйте еще раз. Возможно, требуется авторизация.");
+      alert(
+        "Не удалось отправить оценку. Попробуйте еще раз. Возможно, требуется авторизация."
+      );
     } finally {
       setSubmittingRating(false);
     }
@@ -120,12 +123,13 @@ export default function BookDetailPage({ user }) {
   const renderStars = (rating, isInteractive = true) => {
     const stars = [];
     // Если пользователь не авторизован, отключаем интерактивность
-    const canInteract = isInteractive && !!user && !hasRated; 
-    
+    const canInteract = isInteractive && !!user && !hasRated;
+
     for (let i = 1; i <= 5; i++) {
       stars.push(
         <span
           key={i}
+          className={`rating-star ${canInteract ? "interactive" : ""}`}
           style={{
             cursor: canInteract ? "pointer" : "default",
             color: i <= rating ? "#ffc107" : "#e0e0e0",
@@ -176,7 +180,9 @@ export default function BookDetailPage({ user }) {
       alert("Комментарий добавлен!");
     } catch (error) {
       console.error("Ошибка при добавлении комментария:", error);
-      alert("Не удалось добавить комментарий. Попробуйте еще раз. Возможно, требуется авторизация.");
+      alert(
+        "Не удалось добавить комментарий. Попробуйте еще раз. Возможно, требуется авторизация."
+      );
     } finally {
       setSubmittingComment(false);
     }
@@ -380,7 +386,8 @@ export default function BookDetailPage({ user }) {
               </form>
             ) : (
               <p style={{ color: "#777", fontStyle: "italic" }}>
-                <a href="/login">Войдите</a>, чтобы иметь возможность оставлять комментарии.
+                <a href="/login">Войдите</a>, чтобы иметь возможность оставлять
+                комментарии.
               </p>
             )}
           </div>
@@ -497,7 +504,7 @@ export default function BookDetailPage({ user }) {
             }}
             onClick={closeReadModal}
           />
-          
+
           <div
             className="read-modal"
             style={{
@@ -515,7 +522,14 @@ export default function BookDetailPage({ user }) {
               overflow: "hidden",
             }}
           >
-            <div className="modal-header" style={{ padding: "1.5rem", borderBottom: "1px solid #e9ecef", backgroundColor: "#f8f9fa" }}>
+            <div
+              className="modal-header"
+              style={{
+                padding: "1.5rem",
+                borderBottom: "1px solid #e9ecef",
+                backgroundColor: "#f8f9fa",
+              }}
+            >
               <h3 style={{ margin: 0, color: "#333" }}>
                 📖 Чтение: {book.title}
               </h3>
@@ -539,16 +553,38 @@ export default function BookDetailPage({ user }) {
                 ×
               </button>
             </div>
-            
-            <div className="modal-body" style={{ padding: "2rem", maxHeight: "60vh", overflowY: "auto" }}>
-                <p 
-                    dangerouslySetInnerHTML={{ __html: book.bookText || "К сожалению, текст книги недоступен для онлайн-чтения." }} 
-                    style={{ whiteSpace: 'pre-wrap', lineHeight: '1.8', fontFamily: 'Georgia, serif', fontSize: '1.1rem' }}
-                />
+
+            <div
+              className="modal-body"
+              style={{ padding: "2rem", maxHeight: "60vh", overflowY: "auto" }}
+            >
+              <p
+                dangerouslySetInnerHTML={{
+                  __html:
+                    book.bookText ||
+                    "К сожалению, текст книги недоступен для онлайн-чтения.",
+                }}
+                style={{
+                  whiteSpace: "pre-wrap",
+                  lineHeight: "1.8",
+                  fontFamily: "Georgia, serif",
+                  fontSize: "1.1rem",
+                }}
+              />
             </div>
 
-            <div className="modal-footer" style={{ padding: "1rem 1.5rem", borderTop: "1px solid #e9ecef", backgroundColor: "#f8f9fa", textAlign: "right" }}>
-                <button className="btn btn-secondary" onClick={closeReadModal}>Закрыть</button>
+            <div
+              className="modal-footer"
+              style={{
+                padding: "1rem 1.5rem",
+                borderTop: "1px solid #e9ecef",
+                backgroundColor: "#f8f9fa",
+                textAlign: "right",
+              }}
+            >
+              <button className="btn btn-secondary" onClick={closeReadModal}>
+                Закрыть
+              </button>
             </div>
           </div>
         </>
