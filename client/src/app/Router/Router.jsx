@@ -26,7 +26,7 @@ function Router({
             path="/books/:id"
             element={
               <ProtectedRoute isAllowed={!!user} redirectTo="/login">
-                <BookDetailPage />
+                <BookDetailPage user={user} />
               </ProtectedRoute>
             }
           />
