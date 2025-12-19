@@ -1,9 +1,19 @@
 import { useState } from "react";
-import { Link } from "react-router";
+import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import "../styles/navbar.css";
 
 export default function CustomNavbar({ user, logoutHandler }) {
   const [isOpen, setIsOpen] = useState(false);
+  const { t, i18n } = useTranslation();
+
+  const changeLang = (lng) => {
+    i18n.changeLanguage(lng);
+    try {
+      localStorage.setItem("lang", lng);
+    } catch (e) {}
+    if (typeof document !== "undefined") document.documentElement.lang = lng;
+  };
 
   return (
     <nav className="navbar">
@@ -19,8 +29,24 @@ export default function CustomNavbar({ user, logoutHandler }) {
         <div className="snowflake">❅</div>
 
         <Link to="/" className="navbar-brand">
-          🎄 📚 Книжный уголок 🎄
+          {t("navbar.brand")}
         </Link>
+        <div className="lang-switcher">
+          <button
+            className={`lang-btn ${i18n.language === "ru" ? "active" : ""}`}
+            onClick={() => changeLang("ru")}
+            aria-label="Русский"
+          >
+            RU
+          </button>
+          <button
+            className={`lang-btn ${i18n.language === "en" ? "active" : ""}`}
+            onClick={() => changeLang("en")}
+            aria-label="English"
+          >
+            EN
+          </button>
+        </div>
         <button
           className="navbar-toggle"
           onClick={() => setIsOpen(!isOpen)}
@@ -33,12 +59,12 @@ export default function CustomNavbar({ user, logoutHandler }) {
             <>
               <li>
                 <Link to="/registration" className="nav-link">
-                  🎁 Зарегистрироваться
+                  {t("navbar.register")}
                 </Link>
               </li>
               <li>
                 <Link to="/login" className="nav-link">
-                  🔔 Войти
+                  {t("navbar.login")}
                 </Link>
               </li>
             </>
@@ -47,12 +73,12 @@ export default function CustomNavbar({ user, logoutHandler }) {
             <>
               <li>
                 <Link to="/favorites" className="nav-link">
-                  ⭐ Избранное
+                  {t("navbar.favorites")}
                 </Link>
               </li>
               <li>
                 <a className="nav-link" onClick={logoutHandler}>
-                  🎅 Выйти
+                  {t("navbar.logout")}
                 </a>
               </li>
             </>

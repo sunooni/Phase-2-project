@@ -1,9 +1,9 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 
-function Footer(){
-    return (
-        <div>© 2025 Книжные червячки. Авторское право.</div>
-    )
+function Footer() {
+  const { t } = useTranslation();
+  return <div>{t("footer.copyright", { year: 2025 })}</div>;
 }
 
-export default Footer
+export default Footer;

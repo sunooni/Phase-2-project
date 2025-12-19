@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { Container, Button, Form } from "react-bootstrap";
+import { useTranslation } from "react-i18next";
 
 export default function LoginPageClean({
   loginHandler,
   sendOtpHandler,
   verifyOtpHandler,
 }) {
+  const { t } = useTranslation();
   const [isLoading, setIsLoading] = useState(false);
   const [loginType, setLoginType] = useState("email");
 
@@ -31,7 +33,7 @@ export default function LoginPageClean({
   };
 
   const handleSendOtp = async () => {
-    if (!phoneValue) return alert("Введите телефон");
+    if (!phoneValue) return alert(t("login.enterPhone"));
     setIsLoading(true);
     try {
       await sendOtpHandler(phoneValue);
@@ -45,7 +47,7 @@ export default function LoginPageClean({
   };
 
   const handleVerifyOtp = async () => {
-    if (!phoneValue || !codeValue) return alert("Введите телефон и код");
+    if (!phoneValue || !codeValue) return alert(t("login.enterPhoneAndCode"));
     setIsLoading(true);
     try {
       await verifyOtpHandler({ phone: phoneValue, code: codeValue });
@@ -69,8 +71,8 @@ export default function LoginPageClean({
           <div className="user-icon mb-3">
             <i className="fas fa-sign-in-alt fa-2x"></i>
           </div>
-          <h2 className="mb-0 fw-bold">Вход в аккаунт</h2>
-          <p className="mb-0 opacity-75 mt-2">Войдите в свой профиль</p>
+          <h2 className="mb-0 fw-bold">{t("login.login")}</h2>
+          <p className="mb-0 opacity-75 mt-2">{t("login.login")}</p>
         </div>
 
         <div className="card-body">
@@ -82,7 +84,7 @@ export default function LoginPageClean({
                     loginType === "email" ? "fa-envelope" : "fa-phone"
                   } me-2`}
                 ></i>
-                Контактные данные
+                {t("login.noAccount")}
               </Form.Label>
 
               <div className="mb-2">
@@ -99,7 +101,7 @@ export default function LoginPageClean({
                   type="radio"
                   id="login-phone-otp"
                   name="loginType"
-                  label="Телефон (SMS)"
+                  label={t("login.phoneLabel")}
                   checked={loginType === "phone-otp"}
                   onChange={() => setLoginType("phone-otp")}
                   inline
@@ -112,7 +114,7 @@ export default function LoginPageClean({
                   <Form.Control
                     type="email"
                     name="email"
-                    placeholder="Введите email"
+                    placeholder={t("login.emailPlaceholder")}
                     className="form-control shadow-sm focus-ring"
                     required
                   />
@@ -125,7 +127,7 @@ export default function LoginPageClean({
                     name="phone"
                     value={phoneValue}
                     onChange={(e) => setPhoneValue(e.target.value)}
-                    placeholder="+7 (999) 123-45-67"
+                    placeholder={t("login.phoneExample")}
                     className="form-control shadow-sm focus-ring"
                     pattern="[+]?[0-9\s\-\(\)]+"
                     required
@@ -137,14 +139,15 @@ export default function LoginPageClean({
             {loginType === "email" && (
               <Form.Group className="mb-4 position-relative">
                 <Form.Label className="form-label fw-semibold text-muted">
-                  <i className="fas fa-lock me-2"></i>Пароль
+                  <i className="fas fa-lock me-2"></i>
+                  {t("login.passwordPlaceholder")}
                 </Form.Label>
                 <div className="input-group">
                   <span className="input-group-text bg-white"></span>
                   <Form.Control
                     type="password"
                     name="password"
-                    placeholder="Введите пароль"
+                    placeholder={t("login.passwordPlaceholder")}
                     className="form-control shadow-sm focus-ring"
                     required
                   />
@@ -162,8 +165,8 @@ export default function LoginPageClean({
                     disabled={isLoading || countdown > 0}
                   >
                     {countdown > 0
-                      ? `Отправить снова ${countdown}s`
-                      : "Отправить код"}
+                      ? t("login.resend", { seconds: countdown })
+                      : t("login.sendCode")}
                   </button>
                   {otpSent && (
                     <div className="flex-grow-1">
@@ -171,7 +174,7 @@ export default function LoginPageClean({
                         type="text"
                         value={codeValue}
                         onChange={(e) => setCodeValue(e.target.value)}
-                        placeholder="Код из SMS"
+                        placeholder={t("login.codePlaceholder")}
                         className="form-control"
                       />
                     </div>
@@ -183,7 +186,7 @@ export default function LoginPageClean({
                       onClick={handleVerifyOtp}
                       disabled={isLoading}
                     >
-                      Войти
+                      {t("login.login")}
                     </button>
                   )}
                 </div>
@@ -202,12 +205,12 @@ export default function LoginPageClean({
                     className="spinner-border spinner-border-sm me-2"
                     role="status"
                   ></span>
-                  Вход...
+                  {t("login.loading")}
                 </>
               ) : loginType === "email" ? (
-                "Войти"
+                t("login.login")
               ) : (
-                "Использовать SMS"
+                t("login.useSms")
               )}
             </Button>
           </Form>
@@ -215,12 +218,12 @@ export default function LoginPageClean({
 
         <div className="card-footer bg-light text-center">
           <small className="text-muted">
-            Нет аккаунта?{" "}
+            {t("login.noAccount")}{" "}
             <a
               href="/registration"
               className="text-success fw-semibold text-decoration-none"
             >
-              Зарегистрироваться
+              {t("login.register")}
             </a>
           </small>
         </div>

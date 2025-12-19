@@ -1,8 +1,10 @@
 import { useCallback, useEffect, useState } from "react";
 import BookCard from "../entities/ui/BookCard";
 import axiosinstance from "../shared/axiosinstance";
+import { useTranslation } from "react-i18next";
 
 export default function FavoritePage() {
+  const { t } = useTranslation();
   const [cards, setCards] = useState([]);
   const [removingIds, setRemovingIds] = useState(new Set());
   const [loading, setLoading] = useState(true);
@@ -50,7 +52,9 @@ export default function FavoritePage() {
   if (loading) {
     return (
       <div className="container py-4">
-        <div className="loading">Загрузка</div>
+        <div className="loading">
+          {t("form.submit") /* use generic label for loading */}
+        </div>
       </div>
     );
   }
@@ -58,8 +62,8 @@ export default function FavoritePage() {
   if (cards.length === 0) {
     return (
       <div className="container py-4 text-center">
-        <h2 className="mb-3">📚 Избранное пусто</h2>
-        <p>Добавьте книги в избранное, чтобы они отображались здесь.</p>
+        <h2 className="mb-3">{t("favorite.title")}</h2>
+        <p>{t("favorite.empty")}</p>
       </div>
     );
   }
@@ -72,7 +76,7 @@ export default function FavoritePage() {
           <div
             key={card.favoriteId || `card-${card.id}-${index}`}
             className="col-md-6 col-lg-4 col-xl-3"
-            style={{ '--card-index': index }}
+            style={{ "--card-index": index }}
           >
             <BookCard
               book={card}

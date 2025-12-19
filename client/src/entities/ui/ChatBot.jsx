@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { Form, Button } from "react-bootstrap";
 import axiosinstance from "../../shared/axiosinstance";
+import { useTranslation } from "react-i18next";
 
 export default function ChatBot({ user }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -8,6 +9,7 @@ export default function ChatBot({ user }) {
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const messagesEndRef = useRef(null);
+  const { t } = useTranslation();
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -24,19 +26,20 @@ export default function ChatBot({ user }) {
     setLoading(true);
 
     try {
+      const examples = t("chat.examples", { returnObjects: true }) || [
+        "Мастер и Маргарита",
+        "1984",
+        "Маленький принц",
+        "Преступление и наказание",
+        "Гарри Поттер и философский камень",
+        "Война и мир",
+        "Шерлок Холмс: Собака Баскервилей",
+        "Алхимик",
+      ];
       const res = await axiosinstance.post("/api/ai/chat", {
         question: userMsg,
         currentPage: window.location.pathname,
-        userBooks: [
-          "Мастер и Маргарита",
-          "1984",
-          "Маленький принц",
-          "Преступление и наказание",
-          "Гарри Поттер и философский камень",
-          "Война и мир",
-          "Шерлок Холмс: Собака Баскервилей",
-          "Алхимик",
-        ],
+        userBooks: examples,
       });
       setMessages((prev) => [
         ...prev,
@@ -45,7 +48,7 @@ export default function ChatBot({ user }) {
     } catch (error) {
       setMessages((prev) => [
         ...prev,
-        { role: "assistant", content: "Извини, библиотекарь на обеде 😴" },
+        { role: "assistant", content: t("chat.busy") },
       ]);
     } finally {
       setLoading(false);
@@ -60,8 +63,8 @@ export default function ChatBot({ user }) {
         <button
           className="chatbot-toggle"
           onClick={() => setIsOpen(true)}
-          title="Спроси библиотекаря"
-          aria-label="Открыть чат"
+          title={t("chat.open")}
+          aria-label={t("chat.open")}
         >
           📚
         </button>
@@ -71,17 +74,17 @@ export default function ChatBot({ user }) {
         <div
           className="chatbot-window"
           role="dialog"
-          aria-label="Чат с библиотекарем"
+          aria-label={t("chat.aria")}
         >
           <div className="chatbot-header">
             <div>
-              <div className="chatbot-title">Привет, я твой помощник!</div>
-              <div className="chatbot-sub">Помогу найти книги! 📖</div>
+              <div className="chatbot-title">{t("chat.greeting")}</div>
+              <div className="chatbot-sub">{t("chat.subtitle")}</div>
             </div>
             <button
               className="chatbot-close"
               onClick={() => setIsOpen(false)}
-              aria-label="Закрыть чат"
+              aria-label={t("chat.close")}
             >
               ×
             </button>
@@ -89,10 +92,7 @@ export default function ChatBot({ user }) {
 
           <div className="chatbot-messages">
             {messages.length === 0 && (
-              <div className="chatbot-empty">
-                Привет! Ты можешь сказать мне какую книгу ты ищешь и я помогу
-                тебе ее найти 😊
-              </div>
+              <div className="chatbot-empty">{t("chat.placeholder")}</div>
             )}
             {messages.map((msg, i) => (
               <div
@@ -106,7 +106,7 @@ export default function ChatBot({ user }) {
             ))}
             {loading && (
               <div className="chatbot-message assistant">
-                <div className="chatbot-bubble">🤔 Думаю...</div>
+                <div className="chatbot-bubble">{t("chat.thinking")}</div>
               </div>
             )}
             <div ref={messagesEndRef} />
@@ -120,7 +120,7 @@ export default function ChatBot({ user }) {
                 onKeyDown={(e) =>
                   e.key === "Enter" && !e.shiftKey && sendMessage()
                 }
-                placeholder="Что интересует?"
+                placeholder={t("chat.placeholder")}
                 className="chatbot-input-field"
                 disabled={loading}
               />

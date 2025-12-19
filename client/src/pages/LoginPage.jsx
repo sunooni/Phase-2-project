@@ -2,8 +2,10 @@ import { Container } from "react-bootstrap";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 function LoginPage({ loginHandler, sendOtpHandler, verifyOtpHandler }) {
+  const { t } = useTranslation();
   const [isLoading, setIsLoading] = useState(false);
   const [loginType, setLoginType] = useState("email");
 
@@ -29,7 +31,7 @@ function LoginPage({ loginHandler, sendOtpHandler, verifyOtpHandler }) {
   };
 
   const handleSendOtp = async () => {
-    if (!phoneValue) return alert("Введите телефон");
+    if (!phoneValue) return alert(t("login.enterPhone"));
     setIsLoading(true);
     try {
       await sendOtpHandler(phoneValue);
@@ -43,7 +45,7 @@ function LoginPage({ loginHandler, sendOtpHandler, verifyOtpHandler }) {
   };
 
   const handleVerifyOtp = async () => {
-    if (!phoneValue || !codeValue) return alert("Введите телефон и код");
+    if (!phoneValue || !codeValue) return alert(t("login.enterPhoneAndCode"));
     setIsLoading(true);
     try {
       await verifyOtpHandler({ phone: phoneValue, code: codeValue });
@@ -68,7 +70,8 @@ function LoginPage({ loginHandler, sendOtpHandler, verifyOtpHandler }) {
           }}
         >
           <h3 className="mb-0 fw-bold">
-            <i className="fas fa-sign-in-alt me-2"></i>Вход в аккаунт
+            <i className="fas fa-sign-in-alt me-2"></i>
+            {t("login.login")}
           </h3>
         </div>
 
@@ -94,7 +97,7 @@ function LoginPage({ loginHandler, sendOtpHandler, verifyOtpHandler }) {
                   type="radio"
                   id="login-phone-otp"
                   name="loginType"
-                  label="Телефон (SMS)"
+                  label={t("login.phoneLabel")}
                   checked={loginType === "phone-otp"}
                   onChange={() => setLoginType("phone-otp")}
                 />
@@ -109,7 +112,7 @@ function LoginPage({ loginHandler, sendOtpHandler, verifyOtpHandler }) {
                     <Form.Control
                       type="email"
                       name="email"
-                      placeholder="Введите email"
+                      placeholder={t("login.emailPlaceholder")}
                       className="form-control-lg border-start-0"
                       required
                     />
@@ -121,7 +124,7 @@ function LoginPage({ loginHandler, sendOtpHandler, verifyOtpHandler }) {
                     <Form.Control
                       type="password"
                       name="password"
-                      placeholder="Введите пароль"
+                      placeholder={t("login.passwordPlaceholder")}
                       className="form-control-lg border-start-0"
                       required
                     />
@@ -132,7 +135,7 @@ function LoginPage({ loginHandler, sendOtpHandler, verifyOtpHandler }) {
                     className="w-100 btn-lg fw-bold"
                     disabled={isLoading}
                   >
-                    {isLoading ? "Вход..." : "Войти"}
+                    {isLoading ? t("login.loading") : t("login.login")}
                   </Button>
                 </>
               )}
@@ -159,7 +162,7 @@ function LoginPage({ loginHandler, sendOtpHandler, verifyOtpHandler }) {
                     >
                       {countdown > 0
                         ? `Отправить снова ${countdown}s`
-                        : "Отправить код"}
+                        : t("login.sendCode")}
                     </button>
                   </div>
                   {otpSent && (
@@ -171,7 +174,7 @@ function LoginPage({ loginHandler, sendOtpHandler, verifyOtpHandler }) {
                         type="text"
                         value={codeValue}
                         onChange={(e) => setCodeValue(e.target.value)}
-                        placeholder="Код из SMS"
+                        placeholder={t("login.codePlaceholder")}
                         className="form-control form-control-lg border-start-0"
                       />
                       <button
@@ -180,7 +183,7 @@ function LoginPage({ loginHandler, sendOtpHandler, verifyOtpHandler }) {
                         onClick={handleVerifyOtp}
                         disabled={isLoading}
                       >
-                        Войти
+                        {t("login.login")}
                       </button>
                     </div>
                   )}
@@ -192,12 +195,12 @@ function LoginPage({ loginHandler, sendOtpHandler, verifyOtpHandler }) {
 
         <div className="card-footer bg-light text-center py-3">
           <small className="text-muted">
-            Нет аккаунта?{" "}
+            {t("login.noAccount")}{" "}
             <a
               href="/registration"
               className="text-primary fw-semibold text-decoration-none"
             >
-              Зарегистрироваться
+              {t("login.register")}
             </a>
           </small>
         </div>
