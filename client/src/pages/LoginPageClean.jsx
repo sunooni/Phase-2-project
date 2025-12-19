@@ -1,7 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { Container, Button, Form } from "react-bootstrap";
 
-export default function LoginPageClean({ loginHandler, sendOtpHandler, verifyOtpHandler }) {
+export default function LoginPageClean({
+  loginHandler,
+  sendOtpHandler,
+  verifyOtpHandler,
+}) {
   const [isLoading, setIsLoading] = useState(false);
   const [loginType, setLoginType] = useState("email");
 
@@ -73,7 +77,11 @@ export default function LoginPageClean({ loginHandler, sendOtpHandler, verifyOtp
           <Form onSubmit={handleEmailSubmit}>
             <Form.Group className="mb-4 position-relative">
               <Form.Label className="form-label fw-semibold text-muted">
-                <i className={`fas ${loginType === "email" ? "fa-envelope" : "fa-phone"} me-2`}></i>
+                <i
+                  className={`fas ${
+                    loginType === "email" ? "fa-envelope" : "fa-phone"
+                  } me-2`}
+                ></i>
                 Контактные данные
               </Form.Label>
 
@@ -147,16 +155,34 @@ export default function LoginPageClean({ loginHandler, sendOtpHandler, verifyOtp
             {loginType === "phone-otp" && (
               <div className="mb-3">
                 <div className="d-flex">
-                  <button type="button" className="btn btn-outline-success me-2" onClick={handleSendOtp} disabled={isLoading || countdown > 0}>
-                    {countdown > 0 ? `Отправить снова ${countdown}s` : "Отправить код"}
+                  <button
+                    type="button"
+                    className="btn btn-outline-success me-2"
+                    onClick={handleSendOtp}
+                    disabled={isLoading || countdown > 0}
+                  >
+                    {countdown > 0
+                      ? `Отправить снова ${countdown}s`
+                      : "Отправить код"}
                   </button>
                   {otpSent && (
                     <div className="flex-grow-1">
-                      <input type="text" value={codeValue} onChange={(e) => setCodeValue(e.target.value)} placeholder="Код из SMS" className="form-control" />
+                      <input
+                        type="text"
+                        value={codeValue}
+                        onChange={(e) => setCodeValue(e.target.value)}
+                        placeholder="Код из SMS"
+                        className="form-control"
+                      />
                     </div>
                   )}
                   {otpSent && (
-                    <button type="button" className="btn btn-success ms-2" onClick={handleVerifyOtp} disabled={isLoading}>
+                    <button
+                      type="button"
+                      className="btn btn-success ms-2"
+                      onClick={handleVerifyOtp}
+                      disabled={isLoading}
+                    >
                       Войти
                     </button>
                   )}
@@ -164,14 +190,24 @@ export default function LoginPageClean({ loginHandler, sendOtpHandler, verifyOtp
               </div>
             )}
 
-            <Button type="submit" className="w-100 btn-lg fw-bold shadow-lg btn-gradient-success py-3" disabled={isLoading} onClick={(e) => loginType === 'phone-otp' && e.preventDefault()}>
+            <Button
+              type="submit"
+              className="w-100 btn-lg fw-bold shadow-lg btn-gradient-success py-3"
+              disabled={isLoading}
+              onClick={(e) => loginType === "phone-otp" && e.preventDefault()}
+            >
               {isLoading ? (
                 <>
-                  <span className="spinner-border spinner-border-sm me-2" role="status"></span>
+                  <span
+                    className="spinner-border spinner-border-sm me-2"
+                    role="status"
+                  ></span>
                   Вход...
                 </>
+              ) : loginType === "email" ? (
+                "Войти"
               ) : (
-                loginType === 'email' ? 'Войти' : 'Использовать SMS'
+                "Использовать SMS"
               )}
             </Button>
           </Form>
@@ -179,8 +215,11 @@ export default function LoginPageClean({ loginHandler, sendOtpHandler, verifyOtp
 
         <div className="card-footer bg-light text-center">
           <small className="text-muted">
-            Нет аккаунта?{' '}
-            <a href="/registration" className="text-success fw-semibold text-decoration-none">
+            Нет аккаунта?{" "}
+            <a
+              href="/registration"
+              className="text-success fw-semibold text-decoration-none"
+            >
               Зарегистрироваться
             </a>
           </small>
