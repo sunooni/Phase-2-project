@@ -170,8 +170,12 @@ p {
   opacity: 0;
   display: flex;
   flex-direction: column;
-  /* use min-height to keep cards visually consistent but allow content to expand */
-  min-height: 640px;
+  /* ensure the card always fills its column width and uses border-box sizing */
+  width: 100%;
+  box-sizing: border-box;
+  /* remove a hard baseline min-height here — we'll enforce consistent heights
+     for cards placed inside the grid columns so standalone cards can shrink */
+  min-height: 0;
 }
 
 /* Responsive card heights */
@@ -303,7 +307,27 @@ p {
   display: flex;
   flex-direction: column;
   height: 100%;
-  min-height: 0; /* allow min-height from .book-card to control baseline */
+  /* enforce a consistent minimum card height when cards are arranged in the grid
+     so all cards look uniform (keeps layout stable) */
+  min-height: 640px;
+}
+
+@media (max-width: 992px) {
+  .row > [class*="col-"] .book-card {
+    min-height: 600px;
+  }
+}
+
+@media (max-width: 768px) {
+  .row > [class*="col-"] .book-card {
+    min-height: 560px;
+  }
+}
+
+@media (max-width: 576px) {
+  .row > [class*="col-"] .book-card {
+    min-height: 0;
+  }
 }
 
 /* === НОВОГОДНЯЯ АНИМАЦИЯ ФОНАРИКОВ === */
