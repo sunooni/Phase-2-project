@@ -46,7 +46,8 @@ export default function HomePage({ user }) {
       const params = new URLSearchParams();
       if (filters.genre) params.append("genre", filters.genre);
       if (filters.author) params.append("author", filters.author);
-      if (filters.sortByRating) params.append("sortByRating", filters.sortByRating);
+      if (filters.sortByRating)
+        params.append("sortByRating", filters.sortByRating);
 
       const response = await fetch(`/api/books?${params}`);
       const data = await response.json();
@@ -55,11 +56,15 @@ export default function HomePage({ user }) {
       setFilteredBooks(data);
 
       if (!filters.genre && !filters.author && !filters.sortByRating) {
-        const uniqueAuthors = [...new Set(data.map((book) => book.author))].length;
+        const uniqueAuthors = [...new Set(data.map((book) => book.author))]
+          .length;
         setStats({
           totalBooks: data.length,
           totalAuthors: uniqueAuthors,
-          totalRatings: data.reduce((acc, book) => acc + (book.ratings?.length || 0), 0),
+          totalRatings: data.reduce(
+            (acc, book) => acc + (book.ratings?.length || 0),
+            0
+          ),
         });
       }
     } catch (error) {
@@ -99,23 +104,27 @@ export default function HomePage({ user }) {
 
       const response = await axiosinstance.post("/books", formData);
       const newBook = response.data;
-      
+
       setShowForm(false);
       setImageType("file");
       setTextType("file");
-      
-      setBooks(prev => [newBook, ...prev]);
-      setFilteredBooks(prev => [newBook, ...prev]);
-      
-      setStats(prev => ({
+
+      setBooks((prev) => [newBook, ...prev]);
+      setFilteredBooks((prev) => [newBook, ...prev]);
+
+      setStats((prev) => ({
         totalBooks: prev.totalBooks + 1,
         totalAuthors: prev.totalAuthors,
-        totalRatings: prev.totalRatings
+        totalRatings: prev.totalRatings,
       }));
-
     } catch (error) {
-      console.error('Ошибка создания книги:', error.response?.data || error.message);
-      alert('Ошибка при создании книги: ' + (error.response?.data || error.message));
+      console.error(
+        "Ошибка создания книги:",
+        error.response?.data || error.message
+      );
+      alert(
+        "Ошибка при создании книги: " + (error.response?.data || error.message)
+      );
     }
   };
 
@@ -125,7 +134,7 @@ export default function HomePage({ user }) {
       setBooks(books.filter((el) => el.id !== id));
       setFilteredBooks(filteredBooks.filter((el) => el.id !== id));
     } catch (error) {
-      console.error('Ошибка удаления:', error);
+      console.error("Ошибка удаления:", error);
     }
   };
 
@@ -170,17 +179,27 @@ export default function HomePage({ user }) {
           >
             {showForm ? "✕ Отмена" : "+ Добавить книгу"}
           </button>
-          
+
           {showForm && (
             <form className="book-form" onSubmit={submitHandler}>
               <div className="form-group">
                 <label className="form-label">Название книги</label>
-                <input className="form-control" type="text" name="title" required />
+                <input
+                  className="form-control"
+                  type="text"
+                  name="title"
+                  required
+                />
               </div>
 
               <div className="form-group">
                 <label className="form-label">Автор книги</label>
-                <input className="form-control" type="text" name="author" required />
+                <input
+                  className="form-control"
+                  type="text"
+                  name="author"
+                  required
+                />
               </div>
 
               <div className="form-group">
@@ -192,13 +211,18 @@ export default function HomePage({ user }) {
                   placeholder="Введите жанр книги (например: Фантастика, Детектив, Роман...)"
                 />
                 <small className="form-text">
-                  Популярные жанры: Фантастика, Фэнтези, Детектив, Классическая литература, Философская проза, Антиутопия
+                  Популярные жанры: Фантастика, Фэнтези, Детектив, Классическая
+                  литература, Философская проза, Антиутопия
                 </small>
               </div>
 
               <div className="form-group">
                 <label className="form-label">Краткое описание книги</label>
-                <input className="form-control" type="text" name="descriptions" />
+                <input
+                  className="form-control"
+                  type="text"
+                  name="descriptions"
+                />
               </div>
 
               <div className="form-group">
@@ -229,7 +253,12 @@ export default function HomePage({ user }) {
                   </label>
                 </div>
                 {imageType === "file" ? (
-                  <input className="form-control" type="file" name="cover" accept="image/*" />
+                  <input
+                    className="form-control"
+                    type="file"
+                    name="cover"
+                    accept="image/*"
+                  />
                 ) : (
                   <input
                     className="form-control"
@@ -239,7 +268,9 @@ export default function HomePage({ user }) {
                   />
                 )}
               </div>
-              <button type="submit" className="btn btn-primary">Создать</button>
+              <button type="submit" className="btn btn-primary">
+                Создать
+              </button>
             </form>
           )}
         </div>
@@ -260,17 +291,27 @@ export default function HomePage({ user }) {
             <div className="active-filters">
               <small>Активные фильтры:</small>
               {filters.genre && (
-                <span className="badge badge-secondary">Жанр: {filters.genre}</span>
+                <span className="badge badge-secondary">
+                  Жанр: {filters.genre}
+                </span>
               )}
               {filters.author && (
-                <span className="badge badge-secondary">Автор: {filters.author}</span>
+                <span className="badge badge-secondary">
+                  Автор: {filters.author}
+                </span>
               )}
               {filters.sortByRating && (
                 <span className="badge badge-secondary">
-                  Сортировка: {filters.sortByRating === "desc" ? "Высокий рейтинг" : "Низкий рейтинг"}
+                  Сортировка:{" "}
+                  {filters.sortByRating === "desc"
+                    ? "Высокий рейтинг"
+                    : "Низкий рейтинг"}
                 </span>
               )}
-              <button className="btn btn-secondary btn-sm" onClick={clearFilters}>
+              <button
+                className="btn btn-secondary btn-sm"
+                onClick={clearFilters}
+              >
                 Очистить
               </button>
             </div>
@@ -286,11 +327,15 @@ export default function HomePage({ user }) {
                   <select
                     className="form-select"
                     value={filters.genre}
-                    onChange={(e) => handleFilterChange("genre", e.target.value)}
+                    onChange={(e) =>
+                      handleFilterChange("genre", e.target.value)
+                    }
                   >
                     <option value="">Все жанры</option>
                     {genres.map((genre) => (
-                      <option key={genre} value={genre}>{genre}</option>
+                      <option key={genre} value={genre}>
+                        {genre}
+                      </option>
                     ))}
                   </select>
                 </div>
@@ -303,7 +348,9 @@ export default function HomePage({ user }) {
                     type="text"
                     placeholder="Поиск по автору"
                     value={filters.author}
-                    onChange={(e) => handleFilterChange("author", e.target.value)}
+                    onChange={(e) =>
+                      handleFilterChange("author", e.target.value)
+                    }
                   />
                 </div>
               </div>
@@ -313,7 +360,9 @@ export default function HomePage({ user }) {
                   <select
                     className="form-select"
                     value={filters.sortByRating}
-                    onChange={(e) => handleFilterChange("sortByRating", e.target.value)}
+                    onChange={(e) =>
+                      handleFilterChange("sortByRating", e.target.value)
+                    }
                   >
                     <option value="">По умолчанию</option>
                     <option value="desc">Сначала высокий рейтинг</option>
@@ -327,7 +376,10 @@ export default function HomePage({ user }) {
               <button className="btn btn-secondary" onClick={clearFilters}>
                 Очистить все фильтры
               </button>
-              <button className="btn btn-primary" onClick={() => setShowFilters(false)}>
+              <button
+                className="btn btn-primary"
+                onClick={() => setShowFilters(false)}
+              >
                 Применить фильтры
               </button>
             </div>
@@ -337,17 +389,24 @@ export default function HomePage({ user }) {
 
       <div className="row">
         {filteredBooks.map((book, index) => (
-          <div 
-            key={book.id} 
+          <div
+            key={book.id}
             className="col-md-6 col-lg-4 col-xl-3"
-            style={{ '--card-index': index }}
+            style={{ "--card-index": index }}
           >
-            <ContentCard book={book} user={user} deleteHandler={deleteHandler} />
+            <ContentCard
+              book={book}
+              user={user}
+              deleteHandler={deleteHandler}
+            />
           </div>
         ))}
         {filteredBooks.length === 0 && (
           <div className="col">
-            <p className="text-center" style={{ color: '#777', padding: '2rem' }}>
+            <p
+              className="text-center"
+              style={{ color: "#777", padding: "2rem" }}
+            >
               Книги не найдены
             </p>
           </div>

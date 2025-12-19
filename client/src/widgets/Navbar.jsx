@@ -8,27 +8,37 @@ export default function CustomNavbar({ user, logoutHandler }) {
   return (
     <nav className="navbar">
       <div className="navbar-container">
+        {/* Падающие снежинки */}
+        <div className="snowflake">❄</div>
+        <div className="snowflake">❅</div>
+        <div className="snowflake">❄</div>
+        <div className="snowflake">❅</div>
+        <div className="snowflake">❄</div>
+        <div className="snowflake">❅</div>
+        <div className="snowflake">❄</div>
+        <div className="snowflake">❅</div>
+
         <Link to="/" className="navbar-brand">
-          📚 Книжный уголок
+          🎄 📚 Книжный уголок 🎄
         </Link>
-        <button 
-          className="navbar-toggle" 
+        <button
+          className="navbar-toggle"
           onClick={() => setIsOpen(!isOpen)}
           aria-label="Toggle navigation"
         >
           ☰
         </button>
-        <ul className={`navbar-nav ${isOpen ? 'active' : ''}`}>
+        <ul className={`navbar-nav ${isOpen ? "active" : ""}`}>
           {!user && (
             <>
               <li>
                 <Link to="/registration" className="nav-link">
-                  Зарегистрироваться
+                  🎁 Зарегистрироваться
                 </Link>
               </li>
               <li>
                 <Link to="/login" className="nav-link">
-                  Войти
+                  🔔 Войти
                 </Link>
               </li>
             </>
@@ -42,7 +52,7 @@ export default function CustomNavbar({ user, logoutHandler }) {
               </li>
               <li>
                 <a className="nav-link" onClick={logoutHandler}>
-                  Выйти
+                  🎅 Выйти
                 </a>
               </li>
             </>
