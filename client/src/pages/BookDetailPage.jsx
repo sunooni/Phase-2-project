@@ -17,41 +17,56 @@ export default function BookDetailPage({ user }) {
   const [hasRated, setHasRated] = useState(false);
   const [submittingRating, setSubmittingRating] = useState(false);
 
-  // Состояния для комментариев
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState("");
   const [submittingComment, setSubmittingComment] = useState(false);
   const [editingComment, setEditingComment] = useState(null);
   const [editText, setEditText] = useState("");
 
-  // Новое состояние для модального окна
   const [showReadModal, setShowReadModal] = useState(false);
 
   useEffect(() => {
     const fetchBook = async () => {
       try {
         setLoading(true);
-        const response = await axiosinstance.get(`/books/${id}`);
-        setBook(response.data);
-        setComments(response.data.comments || []);
+        setError(null);
 
-        // Проверяем, есть ли оценка текущего пользователя
-        try {
-          const userRatingResponse = await axiosinstance.get(
-            `/books/${id}/user-rating`
-          );
-          if (userRatingResponse.data.rating) {
-            setUserRating(userRatingResponse.data.rating);
-            setHasRated(true);
-          }
-        } catch (userRatingError) {
-          console.log(t("bookDetail.notRatedYet"));
+        // 1. Используем fetch для публичного запроса данных о книге (не требует токена)
+        const response = await fetch(`/api/books/${id}`);
+
+        if (!response.ok) {
+          // Вызываем ошибку, если статус не 200
+          throw new Error("Книга не найдена или произошла ошибка сервера.");
         }
 
-        setError(null);
+        const data = await response.json();
+        setBook(data);
+        setComments(data.comments || []);
+
+        // 2. Запрос на получение оценки пользователя - ТОЛЬКО если пользователь авторизован
+        if (user) {
+          try {
+            const userRatingResponse = await axiosinstance.get(
+              `/books/${id}/user-rating`
+            );
+            if (userRatingResponse.data.rating) {
+              setUserRating(userRatingResponse.data.rating);
+              setHasRated(true);
+            }
+          } catch (userRatingError) {
+            // Это ожидаемо, если пользователь не ставил оценку
+            console.log(
+              "Пользователь еще не оценивал эту книгу или запрос на оценку не прошел без токена."
+            );
+          }
+        } else {
+          // Сброс пользовательских оценок при отсутствии пользователя
+          setUserRating(0);
+          setHasRated(false);
+        }
       } catch (err) {
         console.error("Ошибка при загрузке книги:", err);
-        setError("Не удалось загрузить информацию о книге.");
+        setError(err.message || "Не удалось загрузить информацию о книге.");
       } finally {
         setLoading(false);
       }
@@ -60,7 +75,7 @@ export default function BookDetailPage({ user }) {
     if (id) {
       fetchBook();
     }
-  }, [id]);
+  }, [id, user]); // Добавили user в зависимости для повторной загрузки при входе/выходе
 
   if (loading) {
     return (
@@ -81,17 +96,20 @@ export default function BookDetailPage({ user }) {
     );
   }
 
+  // Функции submitRating, submitComment, updateComment, deleteComment
+  // ДОЛЖНЫ быть защищены проверкой `if (!user) return;` или отключены в UI
+
   const submitRating = async (rating) => {
-    if (submittingRating || hasRated) return;
+    if (!user || submittingRating || hasRated) return; // Проверка авторизации
 
     try {
       setSubmittingRating(true);
       await axiosinstance.post(`/books/${id}/rating`, { rating });
 
-      // Обновляем книгу после оценки
       const response = await axiosinstance.get(`/books/${id}`);
       setBook(response.data);
       setHasRated(true);
+      setUserRating(rating); // Устанавливаем оценку сразу
 
       alert(
         t("bookDetail.commentAdded") ||
@@ -100,8 +118,7 @@ export default function BookDetailPage({ user }) {
     } catch (error) {
       console.error("Ошибка при отправке оценки:", error);
       alert(
-        t("bookDetail.commentAddError") ||
-          "Не удалось отправить оценку. Попробуйте еще раз."
+        "Не удалось отправить оценку. Попробуйте еще раз. Возможно, требуется авторизация."
       );
     } finally {
       setSubmittingRating(false);
@@ -110,25 +127,28 @@ export default function BookDetailPage({ user }) {
 
   const renderStars = (rating, isInteractive = true) => {
     const stars = [];
+    // Если пользователь не авторизован, отключаем интерактивность
+    const canInteract = isInteractive && !!user && !hasRated;
+
     for (let i = 1; i <= 5; i++) {
       stars.push(
         <span
           key={i}
+          className={`rating-star ${canInteract ? "interactive" : ""}`}
           style={{
-            cursor: isInteractive && !hasRated ? "pointer" : "default",
+            cursor: canInteract ? "pointer" : "default",
             color: i <= rating ? "#ffc107" : "#e0e0e0",
             fontSize: "24px",
             marginRight: "5px",
-            opacity: hasRated && isInteractive ? 0.7 : 1,
+            opacity: !canInteract && isInteractive ? 0.7 : 1, // Приглушаем неактивные звезды
           }}
           onClick={() => {
-            if (isInteractive && !hasRated) {
-              setUserRating(i);
+            if (canInteract) {
               submitRating(i);
             }
           }}
-          onMouseEnter={() => isInteractive && !hasRated && setHoverRating(i)}
-          onMouseLeave={() => isInteractive && !hasRated && setHoverRating(0)}
+          onMouseEnter={() => canInteract && setHoverRating(i)}
+          onMouseLeave={() => canInteract && setHoverRating(0)}
         >
           ⭐
         </span>
@@ -137,7 +157,6 @@ export default function BookDetailPage({ user }) {
     return stars;
   };
 
-  // Функция для отображения текущего рейтинга книги
   const getCurrentRating = () => {
     const rating =
       book.rating ||
@@ -147,15 +166,13 @@ export default function BookDetailPage({ user }) {
     if (!rating) return 0;
     let r = Number(rating);
     if (isNaN(r)) return 0;
-    // Нормализуем рейтинг к шкале 0-5
     if (r > 5 && r <= 10) r = r / 2;
     return Math.max(0, Math.min(5, r));
   };
 
-  // Функции для работы с комментариями
   const submitComment = async (e) => {
     e.preventDefault();
-    if (!newComment.trim() || submittingComment) return;
+    if (!user || !newComment.trim() || submittingComment) return; // Проверка авторизации
 
     try {
       setSubmittingComment(true);
@@ -175,6 +192,7 @@ export default function BookDetailPage({ user }) {
   };
 
   const startEditComment = (comment) => {
+    if (!user || comment.userId !== user.id) return;
     setEditingComment(comment.id);
     setEditText(comment.body);
   };
@@ -185,7 +203,7 @@ export default function BookDetailPage({ user }) {
   };
 
   const updateComment = async (commentId) => {
-    if (!editText.trim()) return;
+    if (!user || !editText.trim()) return; // Проверка авторизации
 
     try {
       const response = await axiosinstance.put(`/books/comments/${commentId}`, {
@@ -219,12 +237,10 @@ export default function BookDetailPage({ user }) {
     }
   };
 
-  // Обработчик для кнопки "Читать"
   const handleReadBook = () => {
     setShowReadModal(true);
   };
 
-  // Закрытие модального окна
   const closeReadModal = () => {
     setShowReadModal(false);
   };
@@ -236,7 +252,6 @@ export default function BookDetailPage({ user }) {
       </button>
 
       <div className="book-detail-layout">
-        {/* Левая колонка - Изображение книги */}
         <div className="book-detail-image-column">
           <div className="book-detail-image">
             <img
@@ -256,7 +271,6 @@ export default function BookDetailPage({ user }) {
           </div>
         </div>
 
-        {/* Средняя колонка - Основная информация */}
         <div className="book-detail-info-column">
           <h1>{book.title}</h1>
           <h2 style={{ color: "#777", fontStyle: "italic" }}>{book.author}</h2>
@@ -267,7 +281,6 @@ export default function BookDetailPage({ user }) {
             </div>
           )}
 
-          {/* Описание книги */}
           {book.description && (
             <div className="mb-4">
               <h4 style={{ color: "#333", marginBottom: "1rem" }}>
@@ -288,7 +301,6 @@ export default function BookDetailPage({ user }) {
             </div>
           )}
 
-          {/* Текущий рейтинг книги */}
           <div className="mb-3">
             <h5 style={{ color: "#333", marginBottom: "0.5rem" }}>
               {t("common.rating")}
@@ -303,7 +315,6 @@ export default function BookDetailPage({ user }) {
             </div>
           </div>
 
-          {/* Пользовательская оценка */}
           <div className="mb-4">
             <h5 style={{ color: "#333", marginBottom: "0.5rem" }}>
               {hasRated ? t("bookDetail.yourRating") : t("bookDetail.rateBook")}
@@ -315,12 +326,24 @@ export default function BookDetailPage({ user }) {
                   {t("bookDetail.sending")}
                 </span>
               )}
-              {hasRated && (
+              {user && hasRated && (
                 <span style={{ marginLeft: "10px", color: "#28a745" }}>
                   ✓ {t("bookDetail.rated", { rating: userRating })}
                 </span>
               )}
-              {!hasRated && userRating === 0 && (
+              {/* Сообщение для неавторизованных пользователей */}
+              {!user && (
+                <span
+                  style={{
+                    marginLeft: "10px",
+                    color: "#d9534f",
+                    fontSize: "0.9rem",
+                  }}
+                >
+                  <a href="/login">Войдите</a>, чтобы оценить книгу.
+                </span>
+              )}
+              {user && !hasRated && userRating === 0 && (
                 <span
                   style={{
                     marginLeft: "10px",
@@ -342,9 +365,7 @@ export default function BookDetailPage({ user }) {
           </div>
         </div>
 
-        {/* Правая колонка - Комментарии */}
         <div className="book-detail-comments-column">
-          {/* Форма добавления комментария */}
           <div className="mb-4">
             <h5 style={{ color: "#333", marginBottom: "1rem" }}>
               {t("common.leaveComment")}
@@ -372,7 +393,6 @@ export default function BookDetailPage({ user }) {
             </form>
           </div>
 
-          {/* Отображение комментариев */}
           <div className="comments-section">
             <h5 style={{ color: "#333", marginBottom: "1rem" }}>
               {t("common.comments")} ({comments.length})
@@ -405,7 +425,6 @@ export default function BookDetailPage({ user }) {
                                     </small>
                       </div>
 
-                      {/* Кнопки редактирования и удаления для автора комментария */}
                       {user && comment.userId === user.id && (
                         <div className="comment-actions">
                           <button
@@ -471,10 +490,8 @@ export default function BookDetailPage({ user }) {
         </div>
       </div>
 
-      {/* Модальное окно для чтения книги */}
       {showReadModal && book.description && (
         <>
-          {/* Затемнение фона */}
           <div
             className="modal-backdrop"
             style={{
@@ -546,9 +563,10 @@ export default function BookDetailPage({ user }) {
               <div
                 dangerouslySetInnerHTML={{ __html: book.description }}
                 style={{
+                  whiteSpace: "pre-wrap",
                   lineHeight: "1.8",
-                  color: "#333",
-                  fontSize: "16px",
+                  fontFamily: "Georgia, serif",
+                  fontSize: "1.1rem",
                 }}
               />
             </div>
