@@ -15,7 +15,10 @@ function LoginPage({ loginHandler }) {
   };
 
   return (
-    <Container className="d-flex justify-content-center align-items-center min-vh-100 py-5">
+    <Container
+      className="d-flex justify-content-center align-items-center py-5"
+      style={{ minHeight: "calc(100vh - 72px)" }}
+    >
       <div className="login-card shadow-lg border-0 animate__animated animate__fadeInUp">
         <div
           className="card-header text-white text-center py-4"
