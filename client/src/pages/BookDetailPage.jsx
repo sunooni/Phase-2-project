@@ -3,15 +3,24 @@ import { useParams, useNavigate } from "react-router";
 import axiosinstance from "../shared/axiosinstance";
 import "../styles/modal.css";
 
-export default function BookDetailPage() {
+export default function BookDetailPage({ user }) {
   const { id } = useParams();
   const navigate = useNavigate();
   const [book, setBook] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [showReadModal, setShowReadModal] = useState(false);
+
   const [userRating, setUserRating] = useState(0);
   const [hoverRating, setHoverRating] = useState(0);
+  const [hasRated, setHasRated] = useState(false);
+  const [submittingRating, setSubmittingRating] = useState(false);
+
+  // Состояния для комментариев
+  const [comments, setComments] = useState([]);
+  const [newComment, setNewComment] = useState("");
+  const [submittingComment, setSubmittingComment] = useState(false);
+  const [editingComment, setEditingComment] = useState(null);
+  const [editText, setEditText] = useState("");
 
   useEffect(() => {
     const fetchBook = async () => {
@@ -19,6 +28,22 @@ export default function BookDetailPage() {
         setLoading(true);
         const response = await axiosinstance.get(`/books/${id}`);
         setBook(response.data);
+        setComments(response.data.comments || []);
+
+        // Проверяем, есть ли оценка текущего пользователя
+        try {
+          const userRatingResponse = await axiosinstance.get(
+            `/books/${id}/user-rating`
+          );
+          if (userRatingResponse.data.rating) {
+            setUserRating(userRatingResponse.data.rating);
+            setHasRated(true);
+          }
+        } catch (userRatingError) {
+          // Если не удалось получить пользовательский рейтинг, это не критично
+          console.log("Пользователь еще не оценивал эту книгу");
+        }
+
         setError(null);
       } catch (err) {
         console.error("Ошибка при загрузке книги:", err);
@@ -52,6 +77,27 @@ export default function BookDetailPage() {
     );
   }
 
+  const submitRating = async (rating) => {
+    if (submittingRating || hasRated) return;
+
+    try {
+      setSubmittingRating(true);
+      await axiosinstance.post(`/books/${id}/rating`, { rating });
+
+      // Обновляем книгу после оценки
+      const response = await axiosinstance.get(`/books/${id}`);
+      setBook(response.data);
+      setHasRated(true);
+
+      alert(`Спасибо за оценку! Вы поставили ${rating} звезд.`);
+    } catch (error) {
+      console.error("Ошибка при отправке оценки:", error);
+      alert("Не удалось отправить оценку. Попробуйте еще раз.");
+    } finally {
+      setSubmittingRating(false);
+    }
+  };
+
   const renderStars = (rating, isInteractive = true) => {
     const stars = [];
     for (let i = 1; i <= 5; i++) {
@@ -59,20 +105,108 @@ export default function BookDetailPage() {
         <span
           key={i}
           style={{
-            cursor: isInteractive ? "pointer" : "default",
+            cursor: isInteractive && !hasRated ? "pointer" : "default",
             color: i <= rating ? "#ffc107" : "#e0e0e0",
             fontSize: "24px",
             marginRight: "5px",
+            opacity: hasRated && isInteractive ? 0.7 : 1,
           }}
-          onClick={() => isInteractive && setUserRating(i)}
-          onMouseEnter={() => isInteractive && setHoverRating(i)}
-          onMouseLeave={() => isInteractive && setHoverRating(0)}
+          onClick={() => {
+            if (isInteractive && !hasRated) {
+              setUserRating(i);
+              submitRating(i);
+            }
+          }}
+          onMouseEnter={() => isInteractive && !hasRated && setHoverRating(i)}
+          onMouseLeave={() => isInteractive && !hasRated && setHoverRating(0)}
         >
           ⭐
         </span>
       );
     }
     return stars;
+  };
+
+  // Функция для отображения текущего рейтинга книги
+  const getCurrentRating = () => {
+    const rating =
+      book.rating ||
+      book.avgRating ||
+      book.averageRating ||
+      book.average_rating;
+    if (!rating) return 0;
+    let r = Number(rating);
+    if (isNaN(r)) return 0;
+    // Нормализуем рейтинг к шкале 0-5
+    if (r > 5 && r <= 10) r = r / 2;
+    return Math.max(0, Math.min(5, r));
+  };
+
+  // Функции для работы с комментариями
+  const submitComment = async (e) => {
+    e.preventDefault();
+    if (!newComment.trim() || submittingComment) return;
+
+    try {
+      setSubmittingComment(true);
+      const response = await axiosinstance.post(`/books/${id}/comments`, {
+        text: newComment.trim(),
+      });
+
+      setComments([response.data, ...comments]);
+      setNewComment("");
+      alert("Комментарий добавлен!");
+    } catch (error) {
+      console.error("Ошибка при добавлении комментария:", error);
+      alert("Не удалось добавить комментарий. Попробуйте еще раз.");
+    } finally {
+      setSubmittingComment(false);
+    }
+  };
+
+  const startEditComment = (comment) => {
+    setEditingComment(comment.id);
+    setEditText(comment.body);
+  };
+
+  const cancelEditComment = () => {
+    setEditingComment(null);
+    setEditText("");
+  };
+
+  const updateComment = async (commentId) => {
+    if (!editText.trim()) return;
+
+    try {
+      const response = await axiosinstance.put(`/books/comments/${commentId}`, {
+        text: editText.trim(),
+      });
+
+      setComments(
+        comments.map((comment) =>
+          comment.id === commentId ? response.data : comment
+        )
+      );
+      setEditingComment(null);
+      setEditText("");
+      alert("Комментарий обновлен!");
+    } catch (error) {
+      console.error("Ошибка при обновлении комментария:", error);
+      alert("Не удалось обновить комментарий.");
+    }
+  };
+
+  const deleteComment = async (commentId) => {
+    if (!confirm("Вы уверены, что хотите удалить комментарий?")) return;
+
+    try {
+      await axiosinstance.delete(`/books/comments/${commentId}`);
+      setComments(comments.filter((comment) => comment.id !== commentId));
+      alert("Комментарий удален!");
+    } catch (error) {
+      console.error("Ошибка при удалении комментария:", error);
+      alert("Не удалось удалить комментарий.");
+    }
   };
 
   return (
@@ -107,72 +241,200 @@ export default function BookDetailPage() {
             </div>
           )}
 
+          {/* Описание книги */}
+          {book.description && (
+            <div className="mb-4">
+              <h4 style={{ color: "#333", marginBottom: "1rem" }}>Описание</h4>
+              <div
+                className="book-description"
+                style={{
+                  backgroundColor: "#f8f9fa",
+                  padding: "1.5rem",
+                  borderRadius: "8px",
+                  border: "1px solid #e9ecef",
+                  lineHeight: "1.6",
+                  color: "#555",
+                }}
+                dangerouslySetInnerHTML={{ __html: book.description }}
+              />
+            </div>
+          )}
+
+          {/* Текущий рейтинг книги */}
           <div className="mb-3">
-            <p>
-              Оцени книгу: {renderStars(hoverRating || userRating)}
-              {userRating > 0 && <span> ({userRating}/5)</span>}
-            </p>
+            <h5 style={{ color: "#333", marginBottom: "0.5rem" }}>
+              Рейтинг книги
+            </h5>
+            <div className="d-flex align-items-center mb-2">
+              {renderStars(getCurrentRating(), false)}
+              <span style={{ marginLeft: "10px", color: "#666" }}>
+                {getCurrentRating() > 0
+                  ? `${getCurrentRating().toFixed(1)}/5`
+                  : "Нет оценок"}
+              </span>
+            </div>
+          </div>
+
+          {/* Пользовательская оценка */}
+          <div className="mb-4">
+            <h5 style={{ color: "#333", marginBottom: "0.5rem" }}>
+              {hasRated ? "Ваша оценка" : "Оцените книгу"}
+            </h5>
+            <div className="d-flex align-items-center">
+              {renderStars(hoverRating || userRating, true)}
+              {submittingRating && (
+                <span style={{ marginLeft: "10px", color: "#666" }}>
+                  Отправка...
+                </span>
+              )}
+              {hasRated && (
+                <span style={{ marginLeft: "10px", color: "#28a745" }}>
+                  ✓ Оценено ({userRating}/5)
+                </span>
+              )}
+              {!hasRated && userRating === 0 && (
+                <span
+                  style={{
+                    marginLeft: "10px",
+                    color: "#666",
+                    fontSize: "0.9rem",
+                  }}
+                >
+                  Нажмите на звезду для оценки
+                </span>
+              )}
+            </div>
           </div>
 
           <div className="book-detail-actions mb-3">
-            <button
-              className="btn btn-info"
-              onClick={() => setShowReadModal(true)}
-            >
-              📖 Читать
-            </button>
+            <button className="btn btn-info">📖 Читать</button>
             <button className="btn btn-info">⬇ Скачать</button>
           </div>
 
-          <form
-            className="review-form"
-            onSubmit={(e) => {
-              e.preventDefault();
-              alert("Отзыв отправлен!");
-            }}
-          >
-            <input
-              className="form-control"
-              type="text"
-              placeholder="Понравилась книга? Оставь отзыв!"
-            />
-            <button type="submit" className="btn btn-primary">
-              Отправить
-            </button>
-          </form>
-        </div>
-      </div>
+          {/* Форма добавления комментария */}
+          <div className="mb-4">
+            <h5 style={{ color: "#333", marginBottom: "1rem" }}>
+              Оставить комментарий
+            </h5>
+            <form onSubmit={submitComment} className="comment-form">
+              <div className="mb-3">
+                <textarea
+                  className="form-control"
+                  rows="3"
+                  placeholder="Поделитесь своими впечатлениями о книге..."
+                  value={newComment}
+                  onChange={(e) => setNewComment(e.target.value)}
+                  disabled={submittingComment}
+                />
+              </div>
+              <button
+                type="submit"
+                className="btn btn-primary"
+                disabled={submittingComment || !newComment.trim()}
+              >
+                {submittingComment ? "Отправка..." : "Отправить комментарий"}
+              </button>
+            </form>
+          </div>
 
-      {showReadModal && (
-        <div className="modal-overlay" onClick={() => setShowReadModal(false)}>
-          <div className="modal" onClick={(e) => e.stopPropagation()}>
-            <div className="modal-header">
-              <h3 className="modal-title">{book.title}</h3>
-              <button
-                className="modal-close"
-                onClick={() => setShowReadModal(false)}
-              >
-                ×
-              </button>
-            </div>
-            <div className="modal-body">
-              {book.description ? (
-                <div dangerouslySetInnerHTML={{ __html: book.description }} />
-              ) : (
-                <p>Описание недоступно</p>
-              )}
-            </div>
-            <div className="modal-footer">
-              <button
-                className="btn btn-secondary"
-                onClick={() => setShowReadModal(false)}
-              >
-                Закрыть
-              </button>
-            </div>
+          {/* Отображение комментариев */}
+          <div className="comments-section">
+            <h5 style={{ color: "#333", marginBottom: "1rem" }}>
+              Комментарии ({comments.length})
+            </h5>
+
+            {comments.length === 0 ? (
+              <p style={{ color: "#777", fontStyle: "italic" }}>
+                Пока нет комментариев. Будьте первым!
+              </p>
+            ) : (
+              <div className="comments-list">
+                {comments.map((comment) => (
+                  <div key={comment.id} className="comment-item mb-3">
+                    <div className="comment-header d-flex justify-content-between align-items-center mb-2">
+                      <div>
+                        <strong style={{ color: "#333" }}>
+                          {comment.user.name}
+                        </strong>
+                        <small style={{ color: "#777", marginLeft: "10px" }}>
+                          {new Date(comment.createdAt).toLocaleDateString(
+                            "ru-RU",
+                            {
+                              year: "numeric",
+                              month: "long",
+                              day: "numeric",
+                              hour: "2-digit",
+                              minute: "2-digit",
+                            }
+                          )}
+                        </small>
+                      </div>
+
+                      {/* Кнопки редактирования и удаления для автора комментария */}
+                      {user && comment.userId === user.id && (
+                        <div className="comment-actions">
+                          <button
+                            className="btn btn-sm btn-outline-secondary me-2"
+                            onClick={() => startEditComment(comment)}
+                          >
+                            ✏️ Изменить
+                          </button>
+                          <button
+                            className="btn btn-sm btn-outline-danger"
+                            onClick={() => deleteComment(comment.id)}
+                          >
+                            🗑️ Удалить
+                          </button>
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="comment-body">
+                      {editingComment === comment.id ? (
+                        <div className="edit-comment-form">
+                          <textarea
+                            className="form-control mb-2"
+                            rows="3"
+                            value={editText}
+                            onChange={(e) => setEditText(e.target.value)}
+                          />
+                          <div>
+                            <button
+                              className="btn btn-sm btn-success me-2"
+                              onClick={() => updateComment(comment.id)}
+                              disabled={!editText.trim()}
+                            >
+                              Сохранить
+                            </button>
+                            <button
+                              className="btn btn-sm btn-secondary"
+                              onClick={cancelEditComment}
+                            >
+                              Отмена
+                            </button>
+                          </div>
+                        </div>
+                      ) : (
+                        <p
+                          style={{
+                            backgroundColor: "#f8f9fa",
+                            padding: "1rem",
+                            borderRadius: "8px",
+                            margin: 0,
+                            lineHeight: "1.5",
+                          }}
+                        >
+                          {comment.body}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         </div>
-      )}
+      </div>
     </div>
   );
 }
