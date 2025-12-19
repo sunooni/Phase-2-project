@@ -89,7 +89,7 @@ export default function BookDetailPage({ user }) {
     return (
       <div className="container py-4 text-center">
         <h2>{error || t("bookDetail.notFound")}</h2>
-        <button className="btn btn-primary mt-3" onClick={() => navigate("/") }>
+        <button className="btn btn-primary mt-3" onClick={() => navigate("/")}>
           {t("common.returnHome")}
         </button>
       </div>
@@ -378,13 +378,28 @@ export default function BookDetailPage({ user }) {
                   placeholder={t("bookDetail.commentPlaceholder")}
                   value={newComment}
                   onChange={(e) => setNewComment(e.target.value)}
-                  disabled={submittingComment}
+                  disabled={submittingComment || !user} // Отключено, если нет пользователя
                 />
               </div>
+              {/* === НОВОЕ СООБЩЕНИЕ ДЛЯ НЕАВТОРИЗОВАННЫХ ПОЛЬЗОВАТЕЛЕЙ === */}
+              {!user && (
+                <div
+                  style={{
+                    color: "#d9534f",
+                    fontSize: "0.9rem",
+                    marginBottom: "1rem",
+                  }}
+                >
+                  <a href="/login">
+                    Войдите
+                  </a>, чтобы оставить комментарий.
+                </div>
+              )}
+              {/* ========================================================== */}
               <button
                 type="submit"
                 className="btn btn-primary"
-                disabled={submittingComment || !newComment.trim()}
+                disabled={submittingComment || !newComment.trim() || !user} // Отключено, если нет пользователя
               >
                 {submittingComment
                   ? t("bookDetail.sending")
@@ -411,18 +426,18 @@ export default function BookDetailPage({ user }) {
                         <strong style={{ color: "#333" }}>
                           {comment.user.name}
                         </strong>
-                                    <small style={{ color: "#777", marginLeft: "10px" }}>
-                                      {new Date(comment.createdAt).toLocaleDateString(
-                                        i18n.language === 'en' ? 'en-US' : 'ru-RU',
-                                        {
-                                          year: "numeric",
-                                          month: "long",
-                                          day: "numeric",
-                                          hour: "2-digit",
-                                          minute: "2-digit",
-                                        }
-                                      )}
-                                    </small>
+                        <small style={{ color: "#777", marginLeft: "10px" }}>
+                          {new Date(comment.createdAt).toLocaleDateString(
+                            i18n.language === 'en' ? 'en-US' : 'ru-RU',
+                            {
+                              year: "numeric",
+                              month: "long",
+                              day: "numeric",
+                              hour: "2-digit",
+                              minute: "2-digit",
+                            }
+                          )}
+                        </small>
                       </div>
 
                       {user && comment.userId === user.id && (
