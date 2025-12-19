@@ -2,8 +2,21 @@ const BookService = require('../services/book.service');
 
 class BookController {
   static async getAllBooks(req, res) {
-    const book = await BookService.getAllBooks();
-    return res.json(book);
+    try {
+      const { genre, author, minRating, sortByRating } = req.query;
+      const filters = {};
+
+      if (genre) filters.genre = genre;
+      if (author) filters.author = author;
+      if (minRating) filters.minRating = parseFloat(minRating);
+      if (sortByRating) filters.sortByRating = sortByRating; // 'asc' или 'desc'
+
+      const books = await BookService.getAllBooks(filters);
+      return res.json(books);
+    } catch (error) {
+      console.error('Error getting books:', error);
+      return res.status(500).json({ error: 'Ошибка получения книг' });
+    }
   }
 
   
@@ -18,12 +31,26 @@ class BookController {
   }
 
   static async createBook(req, res) {
-    const data = req.body;
-    const book = await BookService.createBook({
-      ...data,
-      userId: res.locals.user.id,
-    });
-    return res.status(201).json(book);
+    try {
+      let image = null;
+      if (req.file) {
+        image = `/uploads/${req.file.filename}`;
+      } else if (req.body.image) {
+        image = req.body.image;
+      }
+      const data = {
+        ...req.body,
+        image,
+        userId: res.locals.user.id,
+      };
+      delete data.imageUrl;
+
+      const book = await BookService.createBook(data);
+      return res.status(201).json(book);
+    } catch (error) {
+      console.error('Create book error:', error);
+      return res.status(500).json({ error: 'Ошибка создания книги' });
+    }
   }
 
   static async updateBook(req, res) {
@@ -53,6 +80,15 @@ class BookController {
 
 
 
+  static async getGenres(req, res) {
+    try {
+      const genres = await BookService.getUniqueGenres();
+      return res.json(genres);
+    } catch (error) {
+      console.error('Error getting genres:', error);
+      return res.status(500).json({ error: 'Ошибка получения жанров' });
+    }
+  }
 }
 
 module.exports = BookController;

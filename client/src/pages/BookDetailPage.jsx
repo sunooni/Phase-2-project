@@ -1,25 +1,17 @@
 import React, { useEffect, useState } from "react";
-import {
-  Container,
-  Button,
-  Form,
-  FormControl,
-  Row,
-  Col,
-  Image,
-  Modal,
-} from "react-bootstrap";
-import { useParams } from "react-router";
+import { useParams, useNavigate } from "react-router";
 import axiosinstance from "../shared/axiosinstance";
+import "../styles/modal.css";
 
 export default function BookDetailPage() {
   const { id } = useParams();
+  const navigate = useNavigate();
   const [book, setBook] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showReadModal, setShowReadModal] = useState(false);
-  const [userRating, setUserRating] = useState(0); // 0 = не оценено, 1-5 = рейтинг
-  const [hoverRating, setHoverRating] = useState(0); // для эффекта наведения
+  const [userRating, setUserRating] = useState(0);
+  const [hoverRating, setHoverRating] = useState(0);
 
   useEffect(() => {
     const fetchBook = async () => {
@@ -43,13 +35,23 @@ export default function BookDetailPage() {
 
   if (loading) {
     return (
-      <Container>
-        <h1>Загрузка...</h1>
-      </Container>
+      <div className="container py-4">
+        <div className="loading">Загрузка</div>
+      </div>
     );
   }
 
-  const coverSource = book.image;
+  if (error || !book) {
+    return (
+      <div className="container py-4 text-center">
+        <h2>{error || "Книга не найдена"}</h2>
+        <button className="btn btn-primary mt-3" onClick={() => navigate("/")}>
+          Вернуться на главную
+        </button>
+      </div>
+    );
+  }
+
   const renderStars = (rating, isInteractive = true) => {
     const stars = [];
     for (let i = 1; i <= 5; i++) {
@@ -74,74 +76,103 @@ export default function BookDetailPage() {
   };
 
   return (
-    <Container>
-      <Row className="my-5">
-        <Col md={4}>
-          <Image
-            src={coverSource}
-            alt={`Обложка книги ${book.title}`}
-            fluid
-            style={{ maxHeight: "400px", width: "auto", objectFit: "contain" }}
-          />
-        </Col>
-        <Col md={8}>
+    <div className="container py-4 fade-in">
+      <button className="btn btn-secondary mb-3" onClick={() => navigate(-1)}>
+        ← Назад
+      </button>
+
+      <div className="row">
+        <div className="col-md-4">
+          <div className="book-detail-image">
+            <img
+              src={book.image}
+              alt={`Обложка книги ${book.title}`}
+              onError={(e) => {
+                e.target.onerror = null;
+                e.target.src =
+                  "data:image/svg+xml;utf8," +
+                  encodeURIComponent(
+                    '<svg xmlns="http://www.w3.org/2000/svg" width="400" height="600"><rect width="100%" height="100%" fill="#f8f8f8"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-family="Georgia, serif" font-size="24" fill="#999">Обложка</text></svg>'
+                  );
+              }}
+            />
+          </div>
+        </div>
+        <div className="col-md-8">
           <h1>{book.title}</h1>
-          <h2>Автор: {book.author}</h2>
+          <h2 style={{ color: "#777", fontStyle: "italic" }}>{book.author}</h2>
+          {book.genre && (
+            <div className="mb-3">
+              <span className="badge badge-secondary">{book.genre}</span>
+            </div>
+          )}
 
-          <p>
-            Оцени книгу: {renderStars(hoverRating || userRating)}
-            {userRating > 0 && <span> ({userRating}/5)</span>}
-          </p>
-
-          {/* Кнопки */}
-          <div className="d-flex gap-2 mb-3">
-            <Button
-              variant="success"
-              size="lg"
-              onClick={() => setShowReadModal(true)} // Открытие модалки
-            >
-              Читать
-            </Button>
-            <Button variant="info" size="lg">
-              Скачать
-            </Button>
+          <div className="mb-3">
+            <p>
+              Оцени книгу: {renderStars(hoverRating || userRating)}
+              {userRating > 0 && <span> ({userRating}/5)</span>}
+            </p>
           </div>
 
-          {/* Форма отзыва */}
-          <Form className="d-flex">
-            <FormControl
+          <div className="book-detail-actions mb-3">
+            <button
+              className="btn btn-info"
+              onClick={() => setShowReadModal(true)}
+            >
+              📖 Читать
+            </button>
+            <button className="btn btn-info">⬇ Скачать</button>
+          </div>
+
+          <form
+            className="review-form"
+            onSubmit={(e) => {
+              e.preventDefault();
+              alert("Отзыв отправлен!");
+            }}
+          >
+            <input
+              className="form-control"
               type="text"
               placeholder="Понравилась книга? Оставь отзыв!"
             />
-            <Button type="submit" variant="primary">
+            <button type="submit" className="btn btn-primary">
               Отправить
-            </Button>
-          </Form>
-        </Col>
-      </Row>
+            </button>
+          </form>
+        </div>
+      </div>
 
-      {/* Модальное окно с текстом книги */}
-      <Modal
-        show={showReadModal}
-        onHide={() => setShowReadModal(false)}
-        size="lg"
-      >
-        <Modal.Header closeButton>
-          <Modal.Title>{book.title}</Modal.Title>
-        </Modal.Header>
-        <Modal.Body style={{ maxHeight: "60vh", overflowY: "auto" }}>
-          {book.description ? (
-            <div dangerouslySetInnerHTML={{ __html: book.description }} />
-          ) : (
-            <p>Описание недоступно</p>
-          )}
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={() => setShowReadModal(false)}>
-            Закрыть
-          </Button>
-        </Modal.Footer>
-      </Modal>
-    </Container>
+      {showReadModal && (
+        <div className="modal-overlay" onClick={() => setShowReadModal(false)}>
+          <div className="modal" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h3 className="modal-title">{book.title}</h3>
+              <button
+                className="modal-close"
+                onClick={() => setShowReadModal(false)}
+              >
+                ×
+              </button>
+            </div>
+            <div className="modal-body">
+              {book.description ? (
+                <div dangerouslySetInnerHTML={{ __html: book.description }} />
+              ) : (
+                <p>Описание недоступно</p>
+              )}
+            </div>
+            <div className="modal-footer">
+              <button
+                className="btn btn-secondary"
+                onClick={() => setShowReadModal(false)}
+              >
+                Закрыть
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
   );
 }

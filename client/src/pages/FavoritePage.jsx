@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useState } from "react";
-import { Container } from "react-bootstrap";
 import BookCard from "../entities/ui/BookCard";
 import axiosinstance from "../shared/axiosinstance";
 
@@ -50,43 +49,42 @@ export default function FavoritePage() {
 
   if (loading) {
     return (
-      <Container className="py-4 text-center">
-        <p>Загрузка...</p>
-      </Container>
+      <div className="container py-4">
+        <div className="loading">Загрузка</div>
+      </div>
     );
   }
 
   if (cards.length === 0) {
     return (
-      <Container className="py-4 text-center">
-        <h3>Избранное пусто</h3>
+      <div className="container py-4 text-center">
+        <h2 className="mb-3">📚 Избранное пусто</h2>
         <p>Добавьте книги в избранное, чтобы они отображались здесь.</p>
-      </Container>
+      </div>
     );
   }
 
   return (
-    <Container className="py-4">
-      <h1 className="mb-4">Мои любимые книжки</h1>
-      <div className="row g-4">
-        {cards.map((card, index) => {
-          return (
-            <div
-              key={card.favoriteId || `card-${card.id}-${index}`}
-              className="col-md-6 col-lg-4 col-xl-3"
-            >
-              <BookCard
-                book={card}
-                user={{}}
-                deleteHandler={(favoriteId) => {
-                  removeFavorite(favoriteId);
-                }}
-                isFavoritePage={true}
-              />
-            </div>
-          );
-        })}
+    <div className="container py-4 fade-in">
+      <h1 className="mb-4 text-center">⭐ Мои любимые книжки ⭐</h1>
+      <div className="row">
+        {cards.map((card, index) => (
+          <div
+            key={card.favoriteId || `card-${card.id}-${index}`}
+            className="col-md-6 col-lg-4 col-xl-3"
+            style={{ '--card-index': index }}
+          >
+            <BookCard
+              book={card}
+              user={{}}
+              deleteHandler={(favoriteId) => {
+                removeFavorite(favoriteId);
+              }}
+              isFavoritePage={true}
+            />
+          </div>
+        ))}
       </div>
-    </Container>
+    </div>
   );
 }

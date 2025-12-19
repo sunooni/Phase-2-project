@@ -3,7 +3,7 @@ import { useState } from "react";
 
 export default function RegisterPage({ registerHandler }) {
   const [isLoading, setIsLoading] = useState(false);
-  const [contactType, setContactType] = useState("email"); 
+  const [contactType, setContactType] = useState("email");
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
@@ -12,31 +12,29 @@ export default function RegisterPage({ registerHandler }) {
   };
 
   return (
-    <Container className="d-flex justify-content-center align-items-center min-vh-100 py-5">
+    <Container className="auth-container">
       <div className="register-card shadow-lg border-0 animate__animated animate__fadeInUp">
         <div
-          className="card-header text-white text-center py-5"
+          className="card-header text-white text-center"
           style={{
             background: "linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)",
-            minHeight: "220px",
+            padding: "1.5rem",
           }}
         >
           <div className="user-icon mb-3">
-            <i className="fas fa-user-plus fa-3x"></i>
+            <i className="fas fa-user-plus fa-2x"></i>
           </div>
           <h2 className="mb-0 fw-bold">Присоединяйтесь к нам!</h2>
           <p className="mb-0 opacity-75 mt-2">Создайте аккаунт</p>
         </div>
-        <div className="card-body p-5">
+        <div className="card-body">
           <Form onSubmit={handleSubmit}>
             <Form.Group className="mb-4 position-relative">
               <Form.Label className="form-label fw-semibold text-muted">
                 <i className="fas fa-user me-2"></i>Имя
               </Form.Label>
               <div className="input-group">
-                <span className="input-group-text bg-white">
-                  <i className="fas fa-user text-success"></i>
-                </span>
+                <span className="input-group-text bg-white"></span>
                 <Form.Control
                   type="text"
                   name="name"
@@ -79,13 +77,7 @@ export default function RegisterPage({ registerHandler }) {
               </div>
 
               <div className="input-group">
-                <span className="input-group-text bg-white">
-                  <i
-                    className={`fas ${
-                      contactType === "email" ? "fa-envelope" : "fa-phone"
-                    } text-success`}
-                  ></i>
-                </span>
+                <span className="input-group-text bg-white"></span>
                 {contactType === "email" ? (
                   <Form.Control
                     type="email"
@@ -112,9 +104,7 @@ export default function RegisterPage({ registerHandler }) {
                 <i className="fas fa-lock me-2"></i>Пароль
               </Form.Label>
               <div className="input-group">
-                <span className="input-group-text bg-white">
-                  <i className="fas fa-lock text-success"></i>
-                </span>
+                <span className="input-group-text bg-white"></span>
                 <Form.Control
                   type="password"
                   name="password"
@@ -144,7 +134,7 @@ export default function RegisterPage({ registerHandler }) {
             </Button>
           </Form>
         </div>
-        <div className="card-footer bg-light text-center py-4">
+        <div className="card-footer bg-light text-center">
           <small className="text-muted">
             Уже есть аккаунт?{" "}
             <a

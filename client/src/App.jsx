@@ -39,6 +39,18 @@ function App() {
     setAccessToken(response.data.accessToken);
   };
 
+  const sendOtpHandler = async (phone) => {
+    const response = await axios.post("/api/auth/send-otp", { phone });
+    return response.data;
+  };
+
+  const verifyOtpHandler = async ({ phone, code }) => {
+    const response = await axios.post("/api/auth/verify-otp", { phone, code });
+    setUser(response.data.user);
+    setAccessToken(response.data.accessToken);
+    return response.data;
+  };
+
   const logoutHandler = () => {
     axios.delete("/api/auth/logout").then(() => {
       setUser(null);
@@ -60,6 +72,8 @@ function App() {
       user={user}
       registerHandler={registerHandler}
       loginHandler={loginHandler}
+      sendOtpHandler={sendOtpHandler}
+      verifyOtpHandler={verifyOtpHandler}
       logoutHandler={logoutHandler}
       // deleteHandler={deleteHandler}
     />

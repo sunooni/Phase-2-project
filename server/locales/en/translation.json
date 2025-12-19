@@ -1,0 +1,20 @@
+{
+  "welcome": "Welcome to the book corner",
+  "personalCabinet": "Personal cabinet {{name}}", 
+  "addBook": "+Add book",
+  "bookTitle": "Book title",
+  "bookAuthor": "Book author",
+  "bookDescription": "Book description",
+  "bookComment": "Personal comments",
+  "bookCover": "Book cover",
+  "fileUpload": "Upload file",
+  "imageUrl": "Image URL",
+  "create": "Create",
+  "books": "books",
+  "authors": "authors",
+  "ratings": "ratings",
+  "details": "Details",
+  "addFavorite": "⭐ Add to favorites",
+  "delete": "Delete",
+  "deleteFavorite": "Remove from favorites"
+}
