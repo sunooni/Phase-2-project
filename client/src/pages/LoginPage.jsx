@@ -5,7 +5,7 @@ import { useState } from "react";
 
 function LoginPage({ loginHandler }) {
   const [isLoading, setIsLoading] = useState(false);
-  const [loginType, setLoginType] = useState("email"); 
+  const [loginType, setLoginType] = useState("email");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -15,16 +15,13 @@ function LoginPage({ loginHandler }) {
   };
 
   return (
-    <Container
-      className="d-flex justify-content-center align-items-center py-5"
-      style={{ minHeight: "calc(100vh - 72px)" }}
-    >
+    <Container className="auth-container">
       <div className="login-card shadow-lg border-0 animate__animated animate__fadeInUp">
         <div
-          className="card-header text-white text-center py-4"
+          className="card-header text-white text-center"
           style={{
             background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-            minHeight: "150px",
+            minHeight: "120px",
           }}
         >
           <h3 className="mb-0 fw-bold">
@@ -32,7 +29,7 @@ function LoginPage({ loginHandler }) {
             Вход в аккаунт
           </h3>
         </div>
-        <div className="card-body p-5">
+        <div className="card-body">
           <Form onSubmit={handleSubmit}>
             <Form.Group className="mb-4 position-relative">
               <Form.Label className="form-label fw-semibold text-muted">
@@ -66,20 +63,14 @@ function LoginPage({ loginHandler }) {
                 />
               </div>
 
-              <div className="input-group input-group-lg">
-                <span className="input-group-text bg-white border-end-0">
-                  <i
-                    className={`fas ${
-                      loginType === "email" ? "fa-envelope" : "fa-phone"
-                    } text-primary`}
-                  ></i>
-                </span>
+              <div className="input-group">
+                <span className="input-group-text bg-white border-end-0"></span>
                 {loginType === "email" ? (
                   <Form.Control
                     type="email"
                     placeholder="Введите email"
                     name="email"
-                    className="form-control-lg border-start-0 shadow-sm focus-ring"
+                    className="form-control border-start-0 shadow-sm focus-ring"
                     required
                   />
                 ) : (
@@ -87,7 +78,7 @@ function LoginPage({ loginHandler }) {
                     type="tel"
                     placeholder="+7 (999) 123-45-67"
                     name="phone"
-                    className="form-control-lg border-start-0 shadow-sm focus-ring"
+                    className="form-control border-start-0 shadow-sm focus-ring"
                     pattern="[+]?[0-9\s\-\(\)]+"
                     required
                   />
@@ -99,15 +90,13 @@ function LoginPage({ loginHandler }) {
               <Form.Label className="form-label fw-semibold text-muted">
                 <i className="fas fa-lock me-2"></i>Пароль
               </Form.Label>
-              <div className="input-group input-group-lg">
-                <span className="input-group-text bg-white border-end-0">
-                  <i className="fas fa-lock text-primary"></i>
-                </span>
+              <div className="input-group">
+                <span className="input-group-text bg-white border-end-0"></span>
                 <Form.Control
                   type="password"
                   placeholder="Введите пароль"
                   name="password"
-                  className="form-control-lg border-start-0 shadow-sm focus-ring"
+                  className="form-control border-start-0 shadow-sm focus-ring"
                   required
                 />
               </div>
@@ -133,7 +122,7 @@ function LoginPage({ loginHandler }) {
             </Button>
           </Form>
         </div>
-        <div className="card-footer bg-light text-center py-3">
+        <div className="card-footer bg-light text-center">
           <small className="text-muted">
             Нет аккаунта?{" "}
             <a

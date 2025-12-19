@@ -41,8 +41,9 @@ function BookCard({ book, user, deleteHandler, isFavoritePage = false }) {
         <h3 className="book-card-title">{book.title}</h3>
         <p className="book-card-subtitle">{book.author}</p>
 
+        {/* Жанры */}
         {(book.genre || book.genres) && (
-          <div className="meta-row">
+          <div className="meta-row mb-2">
             {Array.isArray(book.genres) ? (
               book.genres.map((g, i) => (
                 <span key={i} className="badge badge-secondary">
@@ -52,64 +53,72 @@ function BookCard({ book, user, deleteHandler, isFavoritePage = false }) {
             ) : (
               <span className="badge badge-secondary">{book.genre}</span>
             )}
+          </div>
+        )}
 
-            {/* rating support: graphical stars (normalize to 0-5) */}
-            {(() => {
-              const raw =
-                book.rating ??
-                book.avgRating ??
-                book.ratingAvg ??
-                book.averageRating ??
-                book.average_rating;
-              if (raw === undefined || raw === null) return null;
-              let r = Number(raw);
-              if (isNaN(r)) return null;
-              // normalize common 0-10 scales to 0-5
-              if (r > 5 && r <= 10) r = r / 2;
-              r = Math.max(0, Math.min(5, r));
-              const full = Math.floor(r);
-              const half = r - full >= 0.5 ? 1 : 0;
-              const stars = [];
-              for (let i = 0; i < 5; i++) {
-                if (i < full) stars.push("full");
-                else if (i === full && half) stars.push("half");
-                else stars.push("empty");
-              }
-              return (
-                <span
-                  className="rating-stars d-inline-flex align-items-center"
-                  title={`Рейтинг: ${r.toFixed(1)}`}
-                >
-                  {stars.map((s, idx) => {
-                    if (s === "full")
-                      return (
-                        <i
-                          key={idx}
-                          className="fas fa-star"
-                          style={{ color: "#f1c40f", marginRight: 4 }}
-                        ></i>
-                      );
-                    if (s === "half")
-                      return (
-                        <i
-                          key={idx}
-                          className="fas fa-star-half-alt"
-                          style={{ color: "#f1c40f", marginRight: 4 }}
-                        ></i>
-                      );
+        {/* Рейтинг звездочками */}
+        {(() => {
+          const raw =
+            book.rating ??
+            book.avgRating ??
+            book.ratingAvg ??
+            book.averageRating ??
+            book.average_rating;
+          if (raw === undefined || raw === null) return null;
+          let r = Number(raw);
+          if (isNaN(r)) return null;
+          // normalize common 0-10 scales to 0-5
+          if (r > 5 && r <= 10) r = r / 2;
+          r = Math.max(0, Math.min(5, r));
+          const full = Math.floor(r);
+          const half = r - full >= 0.5 ? 1 : 0;
+          const stars = [];
+          for (let i = 0; i < 5; i++) {
+            if (i < full) stars.push("full");
+            else if (i === full && half) stars.push("half");
+            else stars.push("empty");
+          }
+          return (
+            <div className="rating-row mb-3">
+              <span
+                className="rating-stars d-inline-flex align-items-center"
+                title={`Рейтинг: ${r.toFixed(1)}`}
+              >
+                {stars.map((s, idx) => {
+                  if (s === "full")
                     return (
                       <i
                         key={idx}
-                        className="far fa-star"
-                        style={{ color: "#dcdcdc", marginRight: 4 }}
+                        className="fas fa-star"
+                        style={{ color: "#f1c40f", marginRight: 2 }}
                       ></i>
                     );
-                  })}
+                  if (s === "half")
+                    return (
+                      <i
+                        key={idx}
+                        className="fas fa-star-half-alt"
+                        style={{ color: "#f1c40f", marginRight: 2 }}
+                      ></i>
+                    );
+                  return (
+                    <i
+                      key={idx}
+                      className="far fa-star"
+                      style={{ color: "#dcdcdc", marginRight: 2 }}
+                    ></i>
+                  );
+                })}
+                <span
+                  className="rating-text ms-2 text-muted"
+                  style={{ fontSize: "0.85rem" }}
+                >
+                  {r.toFixed(1)}
                 </span>
-              );
-            })()}
-          </div>
-        )}
+              </span>
+            </div>
+          );
+        })()}
         <div className="book-card-actions">
           <button className="btn btn-primary" onClick={handleDetails}>
             Подробнее
